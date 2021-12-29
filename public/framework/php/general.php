@@ -50,6 +50,14 @@ if (isset($_POST['fileName'])) {
             success: function(data) {
                 $('#' + idContent).append(data);
 
+                setTimeout(function() {
+                    if (typeof getPassData == 'function') {
+                        getPassData($('meta[name="base_url"]').attr('content'), $('meta[name="csrf-token"]').attr('content'), dataArray);
+                    } else {
+                        console.log('function getPassData not initialize!');
+                    }
+                }, 50);
+
                 if (typeModal == 'modal') {
                     $('#generalTitle-' + sizeModal).text(title);
                     $('#generalModal-' + sizeModal).modal('show');
@@ -83,6 +91,14 @@ if (isset($_POST['fileName'])) {
             dataType: "html",
             success: function(response) {
                 $('#' + idContent).append(response);
+
+                setTimeout(function() {
+                    if (typeof getPassData == 'function') {
+                        getPassData($('meta[name="base_url"]').attr('content'), $('meta[name="csrf-token"]').attr('content'), dataArray);
+                    } else {
+                        console.log('function getPassData not initialize!');
+                    }
+                }, 50);
 
                 // get form id
                 var formID = $('#' + idContent + ' > form').attr('id');

@@ -44,7 +44,11 @@ class User_model extends Model
 
         $this->serversideDt->query($this->getInstanceDB->getLastQuery());
 
-        // $this->serversideDt->hide('created_at'); // hides 'action' column from the output
+        // $this->serversideDt->hide('created_at'); // hides 'created_at' column from the output
+
+        $this->serversideDt->edit('user_code', function ($data) {
+            return '<a href="javascript:void(0)" onclick="viewRecord(' . $data[$this->primaryKey] . ')"> ' . $data['user_code'] . ' </a>';
+        });
 
         $this->serversideDt->edit('user_gender', function ($data) {
             if ($data['user_gender'] == 1) {
@@ -53,6 +57,7 @@ class User_model extends Model
                 return 'Female';
             }
         });
+
 
         $this->serversideDt->edit('user_id', function ($data) {
             $del = $edit =  '';

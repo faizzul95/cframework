@@ -22,6 +22,8 @@ class Model
     // find($id) takes an id and returns a single model. If no matching model exist, it returns null
     public static function find($id = NULL, $columnName = NULL)
     {
+        $id = escape($id);
+
         $className = get_called_class();
         $obj = new $className;
 
@@ -34,6 +36,8 @@ class Model
     // findOrFail($id) takes an id and returns a single model. If no matching model exist, it throws an error1
     public static function findOrFail($id = NULL)
     {
+        $id = escape($id);
+
         $className = get_called_class();
         $obj = new $className;
 
@@ -52,6 +56,7 @@ class Model
     // where($coloumName, $value) takes the condition and returns all data related in model
     public static function where($coloumName = NULL, $value = NULL)
     {
+        $value = escape($value);
         $className = get_called_class();
         $obj = new $className;
         return db()->where($coloumName, $value)->get($obj->table);
@@ -163,8 +168,33 @@ class Model
 
     public static function delete($id = NULL, $pkTable = NULL)
     {
+        $id = escape($id);
         $className = get_called_class();
         $obj = new $className;
         return delete($obj->table, $id, $pkTable);
+    }
+
+    public static function bulkDeleteData($data = NULL, $pkTable = NULL)
+    {
+        $className = get_called_class();
+        $obj = new $className;
+
+        $countError = $countSuccess = 0;
+
+        foreach ($data as $bulkData) {
+            foreach ($bulkData as $id) {
+                $delete = delete($obj->table, $id, $pkTable);
+                ($delete == 200) ? $countSuccess++ : $countError++;
+            }
+        }
+
+        return ($countError < 1) ? 200 : 400;
+    }
+
+    public static function countData($dataToCount = NULL, $columnToCount = NULL)
+    {
+        $className = get_called_class();
+        $obj = new $className;
+        return countValue($obj->table, $columnToCount, $dataToCount);
     }
 }

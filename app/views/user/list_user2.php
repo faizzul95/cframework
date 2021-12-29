@@ -9,11 +9,11 @@
     </div>
     <div class="card-body">
         <div class="container-fluid mt-5 mb-5">
-            <button type="button" class="btn btn-primary btn-sm" onclick="formModal()">
+            <button type="button" class="btn btn-primary btn-sm float-end ms-2" onclick="formModal()">
                 <i class="fa fa-user"></i> Add User
             </button>
 
-            <button type="button" class="btn btn-warning btn-sm mr-2" onclick="getDataList()" title="reload">
+            <button type="button" class="btn btn-warning  btn-sm float-end" onclick="getDataList()" title="reload">
                 <i class="fa fa-refresh"></i>
             </button>
 
@@ -64,6 +64,25 @@
 
         // or use inline like this without variable declaration (recommend)
         // generateDatatable('dataList', 'serverside', 'user/getAllServerSide', 'nodatadiv');
+    }
+
+    async function viewRecord(id) {
+
+        // get specific data using axios
+        // 1st param = post or get (method to sent)
+        // 2nd param = url to function in controller
+        // 3rd id, or any unique key 
+        const res = await callApi('post', "user/getUsersByID", id);
+
+        const modalTitle = 'User Detail';
+        const fileToLoad = 'user/_view.php';
+        const modalBodyID = null; // set null if using offcanvas
+        const modalSize = null; // sm / md/ lg / xl / xs (according to template bootstrap version) - set null if use offcanvas
+        const modalType = 'offcanvas'; // modal or offcanvas (bootstrap 5 only)
+        loadFileContent(fileToLoad, modalBodyID, modalSize, modalTitle, res.data, modalType);
+
+        // or use inline like this without variable declaration (recommend)
+        // loadFileContent('user/_view.php', null, null, 'User Detail', res.data, 'offcanvas');
     }
 
     async function updateRecord(id) {

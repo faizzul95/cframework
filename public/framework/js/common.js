@@ -58,6 +58,7 @@ async function submitApi(url = null, dataObj = null)
             return axios({
                 method: 'POST',
                 headers: { 
+                    'X-Requested-With': 'XMLHttpRequest',
                     'content-type': 'application/x-www-form-urlencoded' 
                 },
                 url: url,
@@ -87,7 +88,10 @@ async function deleteApi(id, url)
             
             return axios({
                 method: 'POST',
-                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                headers: { 
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'content-type': 'application/x-www-form-urlencoded' 
+                },
                 url: url,
                 data: data
             }); 
@@ -114,7 +118,10 @@ async function callApi(method = 'POST', url, dataObj = null)
     try {
         return axios({
             method: method,
-            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            headers: { 
+                'X-Requested-With': 'XMLHttpRequest',
+                'content-type': 'application/x-www-form-urlencoded' 
+            },
             url: url,
             data: data
         }); 

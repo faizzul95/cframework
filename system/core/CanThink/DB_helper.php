@@ -185,6 +185,13 @@ function rawQuery($query)
     return db()->rawQuery($query);
 }
 
+function countValue($table, $columnToCount, $dataToCount)
+{
+    $db = db(); // initiate database
+    $db->where($columnToCount, $dataToCount);
+    return $db->getValue($table, "count(*)");
+}
+
 function insertMulti($table, $data, $ids = NULL)
 {
     if ($ids) {

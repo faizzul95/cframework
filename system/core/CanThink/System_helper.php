@@ -40,8 +40,15 @@ function antiXss($data)
     $antiXss->removeEvilAttributes(array('style')); // allow style-attributes
 
     $xssFound = false;
-    foreach ($data as $post) {
-        $antiXss->xss_clean($post);
+    if (isArray($data)) {
+        foreach ($data as $post) {
+            $antiXss->xss_clean($post);
+            if ($antiXss->isXssFound()) {
+                $xssFound = true;
+            }
+        }
+    } else {
+        $antiXss->xss_clean($data);
         if ($antiXss->isXssFound()) {
             $xssFound = true;
         }
