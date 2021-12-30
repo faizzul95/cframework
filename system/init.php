@@ -9,6 +9,7 @@ require_once 'core/ExtendedReflectionClass.php';
 require_once 'core/Controller.php';
 require_once 'core/Model.php';
 require_once 'core/Database.php';
+require_once 'core/Seeder.php';
 require_once 'core/Input.php';
 require_once 'core/SessionInterface.php';
 require_once 'core/SessionManager.php';

@@ -1,12 +1,12 @@
 <?php
 
-class Migrate
+class Seed
 {
     public function __construct()
     {
         if (filter_var($_ENV['MIGRATION_ENABLE'], FILTER_VALIDATE_BOOLEAN) === TRUE) {
             // session();
-            $this->migration();
+            $this->seeding();
         }
     }
 
@@ -15,12 +15,11 @@ class Migrate
         error('404'); // redirect to page error 404
     }
 
-    // migrate
-    public function migration()
+    // Seed
+    public function seeding()
     {
-        check_db_exist(); // check if db not exist create it first.
-        echo "===== Migration start ===== <br><br>";
-        foreach (glob('../database/migrations/*.php') as $filename) {
+        echo "===== Seeders start ===== <br><br>";
+        foreach (glob('../database/seeders/*.php') as $filename) {
             if (file_exists($filename)) {
                 require_once(str_replace('\\', '/', $filename));
                 $classes = get_declared_classes();
@@ -29,19 +28,14 @@ class Migrate
                 $obj = new $class; // create new object
 
                 // check if function up is exist
-                if (method_exists($obj, 'up')) {
-                    $obj->up();
-                }
-
-                // check if function down is exist
-                if (method_exists($obj, 'down')) {
-                    $obj->down();
+                if (method_exists($obj, 'run')) {
+                    $obj->run();
                 }
             } else {
                 echo "The file $filename does not exist";
             }
         }
-        echo "<br> ===== Migration ended =====";
+        echo "<br> ===== Seeders ended =====";
         die;
     }
 }

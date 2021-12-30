@@ -36,8 +36,8 @@ class User
         ];
 
         $key = array('PRIMARY KEY' => 'test_id');
-        $result = migrate($table, $column, $key);
-        echo "Table '$table' migrate running <br>";
+        migrate($table, $column, $key);
+        echo "Table '$table' migrate running succesfully <br>";
     }
 
     public function down()

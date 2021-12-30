@@ -287,3 +287,15 @@ function isColumnExist($table, $columnName)
     else
         return true;
 }
+
+
+function check_db_exist()
+{
+    $dbName = db_name();
+    try {
+        db()->rawQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'");
+        // $result = db()->rawQuery("CREATE DATABASE IF NOT EXISTS $dbName");
+    } catch (Exception $e) {
+        return 'Message: ' . $e->getMessage();
+    }
+}

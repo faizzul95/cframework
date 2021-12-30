@@ -94,7 +94,7 @@ function migrate($table, $column = array(), $key = array())
         }
         $query .= ") ENGINE=InnoDB";
 
-        rawQuery($query);
+        db()->rawQuery($query);
     }
 
     // else check for alter table
@@ -171,7 +171,7 @@ function migrate($table, $column = array(), $key = array())
 
         $query .= implode(",", $columnArray);
         $query .= ";";
-        rawQuery($query);
+        db()->rawQuery($query);
     }
 }
 
@@ -180,3 +180,26 @@ function dropTable($tableName)
     $dbName = db_name();
     $dropTable = db()->rawQuery("DROP TABLE `$dbName`.`$tableName`");
 }
+
+function dropColumn($tableName, $columnName)
+{
+    rawQuery("ALTER TABLE $tableName DROP `$columnName`");
+}
+
+
+
+// ALTER TABLE `company` 
+// ADD CONSTRAINT `LOG_STUDENT` 
+// FOREIGN KEY (`test_title`) 
+// REFERENCES `user2`(`test_id`) 
+// ON DELETE CASCADE 
+// ON UPDATE RESTRICT;
+
+// ALTER TABLE `company` 
+// DROP FOREIGN KEY `LOG_STUDENT`; 
+// ALTER TABLE `company` 
+// ADD CONSTRAINT `LOG_STUDENT` 
+// FOREIGN KEY (`test_title`) 
+// REFERENCES `user2`(`test_id`) 
+// ON DELETE CASCADE 
+// ON UPDATE NO ACTION;
