@@ -277,10 +277,10 @@ function sanitizeInput($dataArr)
     return $sanitize;
 }
 
-function isColumnExist($table, $columnName)
+function isTableExist($table)
 {
     $dbName = db_name();
-    $result = db()->rawQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_NAME='$columnName'");
+    $result = db()->rawQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table'");
 
     if (empty($result))
         return false;
@@ -288,14 +288,17 @@ function isColumnExist($table, $columnName)
         return true;
 }
 
-
-function check_db_exist()
+function isColumnExist($table, $columnName)
 {
     $dbName = db_name();
-    try {
-        db()->rawQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'");
-        // $result = db()->rawQuery("CREATE DATABASE IF NOT EXISTS $dbName");
-    } catch (Exception $e) {
-        return 'Message: ' . $e->getMessage();
+
+    // check table
+    if (isTableExist($table)) {
+        $result = db()->rawQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_NAME='$columnName'");
     }
+
+    if (empty($result))
+        return false;
+    else
+        return true;
 }

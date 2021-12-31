@@ -32,10 +32,11 @@ function migrate($table, $column = array(), $key = array())
         'DATE' => NULL,
         'TIMESTAMP' => NULL,
         'DATETIME' => NULL,
+        'BLOB' => NULL,
         'VARCHAR' => '255',
         'TINYINT' => '4',
         'CHAR' => '5',
-        'DECIMAL' => '10,2',
+        'DECIMAL' => '10,4',
     );
 
     // if table not exist create new
@@ -45,7 +46,6 @@ function migrate($table, $column = array(), $key = array())
 
         foreach ($column as $columnName => $set) {
 
-            // $type = $length = $attributes = $autoIncrement = $nullable = "";
             $type = (isset($set['type'])) ? $set['type'] : 'INT'; // set default to int
 
             $length = NULL;
@@ -82,18 +82,23 @@ function migrate($table, $column = array(), $key = array())
             }
 
             if (!isset($set['drop'])) {
-                $query .= $columnName . " $type $length $default $autoIncrement $comment,";
+                $query .= $columnName . " $type $length $unsigned $default $autoIncrement $comment,";
             }
         }
 
         $query .=  "created_at TIMESTAMP NULL DEFAULT NULL,";
         $query .=  "updated_at TIMESTAMP NULL DEFAULT NULL,";
 
-        foreach ($key as $keyName => $attribute) {
-            $query .= $keyName . " ($attribute)";
+        $keyArray = [];
+        foreach ($key as $data) {
+            $columRef = $data['reference'];
+            if (isset($column[$columRef])) {
+                $keyData = $data['type'] . " (`" . $columRef . "`)";
+                array_push($keyArray, trim($keyData));
+            }
         }
+        $query .= implode(",", $keyArray);
         $query .= ") ENGINE=InnoDB";
-
         db()->rawQuery($query);
     }
 
@@ -104,7 +109,7 @@ function migrate($table, $column = array(), $key = array())
 
         $columnArray = array();
         foreach ($column as $columnName => $set) {
-            // $type = $length = $attributes = $autoIncrement = $nullable = "";
+
             $type = (isset($set['type'])) ? $set['type'] : 'INT'; // set default to int
 
             $length = NULL;
@@ -152,9 +157,9 @@ function migrate($table, $column = array(), $key = array())
                 } else {
                     if (isset($set['name'])) {
                         $newName = $set['name'];
-                        array_push($columnArray, trim("CHANGE `$columnName` `$newName` $type $length $default $autoIncrement $comment $addAfter"));
+                        array_push($columnArray, trim("CHANGE `$columnName` `$newName` $type $length $unsigned $default $autoIncrement $comment $addAfter"));
                     } else {
-                        array_push($columnArray, trim("CHANGE `$columnName` `$columnName` $type $length $default $autoIncrement $comment $addAfter"));
+                        array_push($columnArray, trim("CHANGE `$columnName` `$columnName` $type $length $unsigned $default $autoIncrement $comment $addAfter"));
                     }
                 }
             } else {
@@ -164,7 +169,7 @@ function migrate($table, $column = array(), $key = array())
                     if (isset($set['after'])) {
                         $addAfter = 'AFTER ' . $set['after'];
                     }
-                    array_push($columnArray, trim("ADD `$columnName` $type $length $default $autoIncrement $comment $addAfter"));
+                    array_push($columnArray, trim("ADD `$columnName` $type $length $unsigned $default $autoIncrement $comment $addAfter"));
                 }
             }
         }
@@ -186,20 +191,51 @@ function dropColumn($tableName, $columnName)
     rawQuery("ALTER TABLE $tableName DROP `$columnName`");
 }
 
+function removeAllRelation()
+{
+    $dbName = db_name();
+    $relation = rawQuery("SELECT concat('ALTER TABLE `',table_schema,'`.`',table_name,'` DROP FOREIGN KEY ',constraint_name,';')
+              FROM information_schema.table_constraints
+              WHERE constraint_type='FOREIGN KEY'
+              AND table_schema='$dbName'");
 
+    // remove all relation
+    foreach ($relation as $data) {
+        foreach ($data as $key => $query) {
+            rawQuery($query);
+        }
+    }
+}
 
-// ALTER TABLE `company` 
-// ADD CONSTRAINT `LOG_STUDENT` 
-// FOREIGN KEY (`test_title`) 
-// REFERENCES `user2`(`test_id`) 
-// ON DELETE CASCADE 
-// ON UPDATE RESTRICT;
+function addRelation($tableName, $relation)
+{
+    $constrainArr = [];
 
-// ALTER TABLE `company` 
-// DROP FOREIGN KEY `LOG_STUDENT`; 
-// ALTER TABLE `company` 
-// ADD CONSTRAINT `LOG_STUDENT` 
-// FOREIGN KEY (`test_title`) 
-// REFERENCES `user2`(`test_id`) 
-// ON DELETE CASCADE 
-// ON UPDATE NO ACTION;
+    if (isArray($relation)) {
+        foreach ($relation as $relationName => $data) {
+
+            $fk = $data['FOREIGN_KEY'];
+            $refTable = $data['REFERENCES_TABLE'];
+            $refKey = $data['REFERENCES_KEY'];
+            $ondelete = $data['ON_DELETE'];
+            $onupdate = $data['ON_UPDATE'];
+
+            $value = "ADD CONSTRAINT $relationName 
+            FOREIGN KEY ($fk) 
+            REFERENCES `$refTable`(`$refKey`) 
+            ON DELETE $ondelete 
+            ON UPDATE $onupdate";
+
+            $checkColumnFK = isColumnExist($tableName, $fk);
+            $checkColumnReff = isColumnExist($refTable, $refKey);
+
+            if ($checkColumnFK and $checkColumnReff) {
+                array_push($constrainArr, trim($value));
+            }
+        }
+    } else {
+    }
+
+    $query = "ALTER TABLE `$tableName`" . implode(",", $constrainArr) . ";";
+    rawQuery($query);
+}
