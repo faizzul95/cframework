@@ -66,7 +66,7 @@ class AuditTrail
             2 => ['type' => 'INDEX', 'reference' => 'usr_id'],
         ];
 
-        $result = migrate($table, $column, $key);
+        migrate($this->table, $column, $key);
         echo "Table {$this->table} migrate running succesfully <br>";
     }
 
