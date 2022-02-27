@@ -47,7 +47,7 @@ function insert($table, $data, $returnID = false)
 function update($table, $data, $pkValue, $pkTable = NULL)
 {
     if (empty($pkTable)) {
-        $getPKTable = db()->rawQuery("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
+        $getPKTable = rawQuery("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
         $pkTable = $getPKTable[0]['Column_name'];
     }
 
@@ -58,7 +58,7 @@ function update($table, $data, $pkValue, $pkTable = NULL)
 function delete($table, $pkValue, $pkTable = NULL)
 {
     if (empty($pkTable)) {
-        $getPKTable = db()->rawQuery("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
+        $getPKTable = rawQuery("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
         $pkTable = $getPKTable[0]['Column_name'];
     }
 
@@ -204,19 +204,19 @@ function insertMulti($table, $data, $ids = NULL)
 function table_list()
 {
     $dbName = db_name();
-    return db()->rawQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='$dbName'");
+    return rawQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='$dbName'");
 }
 
 function primary_field($table, $debug = false)
 {
     $dbName = db_name($debug);
-    return db()->rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_KEY = 'PRI'");
+    return rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_KEY = 'PRI'");
 }
 
 function not_primary_field($table, $debug = false)
 {
     $dbName = db_name($debug);
-    $data = db()->rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_KEY <> 'PRI'");
+    $data = rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_KEY <> 'PRI'");
 
     foreach ($data as $row) {
         $fields[] = array('column_name' => $row['COLUMN_NAME'], 'column_key' => $row['COLUMN_KEY'], 'data_type' => $row['DATA_TYPE']);
@@ -228,7 +228,7 @@ function not_primary_field($table, $debug = false)
 function all_field($table, $debug = false)
 {
     $dbName = db_name($debug);
-    $data = db()->rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table'");
+    $data = rawQuery("SELECT COLUMN_NAME, COLUMN_KEY, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table'");
 
     foreach ($data as $row) {
         $fields[] = array('column_name' => $row['COLUMN_NAME'], 'column_key' => $row['COLUMN_KEY'], 'data_type' => $row['DATA_TYPE']);
@@ -240,7 +240,7 @@ function all_field($table, $debug = false)
 function enum_field($table, $columnName)
 {
     $dbName = db_name();
-    $data = db()->rawQuery("SELECT
+    $data = rawQuery("SELECT
               TRIM(TRAILING ')' FROM TRIM(LEADING '(' FROM TRIM(LEADING 'enum' FROM column_type))) column_type
             FROM
               information_schema.columns
@@ -280,7 +280,7 @@ function sanitizeInput($dataArr)
 function isTableExist($table)
 {
     $dbName = db_name();
-    $result = db()->rawQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table'");
+    $result = rawQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table'");
 
     if (empty($result))
         return false;
@@ -294,7 +294,7 @@ function isColumnExist($table, $columnName)
 
     // check table
     if (isTableExist($table)) {
-        $result = db()->rawQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_NAME='$columnName'");
+        $result = rawQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$table' AND COLUMN_NAME='$columnName'");
     }
 
     if (empty($result))

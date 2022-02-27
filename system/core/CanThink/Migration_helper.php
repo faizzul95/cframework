@@ -99,6 +99,7 @@ function migrate($table, $column = array(), $key = array())
         }
         $query .= implode(",", $keyArray);
         $query .= ") ENGINE=InnoDB";
+
         db()->rawQuery($query);
     }
 
@@ -233,9 +234,9 @@ function addRelation($tableName, $relation)
                 array_push($constrainArr, trim($value));
             }
         }
-    } else {
     }
 
-    $query = "ALTER TABLE `$tableName`" . implode(",", $constrainArr) . ";";
+    $query = "ALTER TABLE `$tableName` " . implode(",", $constrainArr) . ";";
+
     rawQuery($query);
 }

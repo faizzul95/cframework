@@ -22,23 +22,7 @@ function message($code, $text = 'create')
     // http_response_code($code); // use in api
 
     if ($code == 200) {
-        if ($text == 'create' || $text == 'register') {
-            return 'Registered successfully';
-        } else if ($text == 'update' || $text == 'edit') {
-            return 'Updated successfully';
-        } else if ($text == 'upload') {
-            return 'Upload complete';
-        } else if ($text == 'delete' || $text == 'remove') {
-            return 'Remove successfully';
-        } else if ($text == 'crud') {
-            return 'CRUD successfully generated';
-        } else if ($text == 'email') {
-            return 'Email sent successfully';
-        } else if ($text == 'save') {
-            return 'Save successfully';
-        } else {
-            return ucfirst(strtolower($text)) . ' successfully';
-        }
+        return ucfirst($text) . ' successfully';
     } else {
         return 'Please consult the system administrator';
     }

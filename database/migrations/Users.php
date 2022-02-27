@@ -2,7 +2,7 @@
 
 class Users
 {
-    protected $table = 'a_user';
+    protected $table = 'user';
 
     public function up()
     {
@@ -162,7 +162,7 @@ class Users
         ];
 
         migrate($this->table, $column, $key);
-        echo "Table {$this->table} migrate running succesfully <br>";
+        echo "Table <b style='color:red'><i>{$this->table}</i></b> migrate running succesfully <br>";
     }
 
     public function down()

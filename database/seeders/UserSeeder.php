@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
                 'user_avatar' => 'default/user.png',
                 'role_id' => $user['role'],
                 'user_status' => '1',
-                'user_password' => password_hash('1234qwer', PASSWORD_DEFAULT)
+                'user_password' => password_hash('password', PASSWORD_DEFAULT)
             ]);
         }
 
