@@ -1,4 +1,8 @@
-<?php /** @noinspection TypeUnsafeComparisonInspection */
+<?php /** @noinspection UnknownInspectionInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection TypeUnsafeComparisonInspection */
 /** @noinspection PhpUnused */
 
 /** @noinspection DuplicatedCode */
@@ -6,6 +10,7 @@
 
 namespace eftec\bladeone;
 
+use Exception;
 use function fclose;
 use function file_put_contents;
 use function filemtime;
@@ -51,7 +56,7 @@ trait BladeOneCache
     protected $cachePageRunning = false;
     protected $cacheLog;
     /**
-     * @var array avoids to compare the file different times. It also avoids race conditions.
+     * @var array avoids comparing the file different times. It also avoids race conditions.
      */
     private $cacheExpired = [];
     /**
@@ -70,7 +75,7 @@ trait BladeOneCache
     }
 
     /**
-     * It sets the cache log. If not cache log then it does not generates a log file<br>
+     * It sets the cache log. If not cache log then it does not generate a log file<br>
      * The cache log stores each time a template is creates or expired.<br>
      *
      * @param string $file
@@ -79,7 +84,7 @@ trait BladeOneCache
     {
         $this->cacheLog=$file;
     }
-    
+
     public function writeCacheLog($txt, $nivel)
     {
         if (!$this->cacheLog) {
@@ -114,7 +119,7 @@ trait BladeOneCache
      * It sets the strategy of the cache page.
      *
      * @param null|string $cacheStrategy =['get','post','getpost','request',null][$i]
-     * @param array|null $index if null then it reads all indexes. If not, it reads a indexes.
+     * @param array|null $index if null then it reads all indexes. If not, it reads an indexes.
      */
     public function setCacheStrategy($cacheStrategy, $index = null)
     {
@@ -123,7 +128,7 @@ trait BladeOneCache
     }
 
     /**
-     * It obtains an unique GUID based in:<br>
+     * It obtains a unique GUID based in:<br>
      * <b>get</b>= parameters from the url<br>
      * <b>post</b>= parameters sends via post<br>
      * <b>getpost</b> = a mix between get and post<br>
@@ -176,16 +181,16 @@ trait BladeOneCache
         // else
         // save for the first time.
 
-        return $this->phpTag . "echo \$this->cacheStart{$expression}; if(!\$this->cacheRunning) { ?>";
+        return $this->phpTag . "echo \$this->cacheStart$expression; if(!\$this->cacheRunning) { ?>";
     }
 
     public function compileEndCache($expression)
     {
-        return $this->phpTag . "} // if cacheRunning\necho \$this->cacheEnd{$expression}; ?>";
+        return $this->phpTag . "} // if cacheRunning\necho \$this->cacheEnd$expression; ?>";
     }
 
     /**
-     * It get the filename of the compiled file (cached). If cache is not enabled, then it
+     * It gets the filename of the compiled file (cached). If cache is not enabled, then it
      * returns the regular file.
      *
      * @param string $view
@@ -204,10 +209,11 @@ trait BladeOneCache
     /**
      * run the blade engine. It returns the result of the code.
      *
-     * @param string $view The name of the cache. Ex: "folder.folder.view" ("/folder/folder/view.blade")
-     * @param array $variables An associative arrays with the values to display.
-     * @param int $ttl time to live (in second).
+     * @param string $view      The name of the cache. Ex: "folder.folder.view" ("/folder/folder/view.blade")
+     * @param array  $variables An associative arrays with the values to display.
+     * @param int    $ttl       time to live (in second).
      * @return string
+     * @throws Exception
      */
     public function runCache($view, $variables = [], $ttl = 86400)
     {
@@ -309,7 +315,7 @@ trait BladeOneCache
     public function cacheEnd($txt = null)
     {
         if (!$this->cacheRunning) {
-            $txt = ($txt !== null) ? $txt : substr(ob_get_contents(), $this->curCachePosition);
+            $txt = $txt ?? substr(ob_get_contents(), $this->curCachePosition);
             if ($this->cachePageRunning) {
                 $compiledFile = $this->getCompiledFileCache($this->fileName);
             } else {

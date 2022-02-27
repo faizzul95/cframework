@@ -55,16 +55,12 @@ class EasyCSRF
         $key = $this->sanitizeKey($key);
 
         if (!$token) {
-            // throw new InvalidCsrfTokenException('Invalid CSRF token');
-            return 'Invalid CSRF token';
-            exit;
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
 
         $sessionToken = $this->session->get($this->session_prefix . $key);
         if (!$sessionToken) {
-            // throw new InvalidCsrfTokenException('Invalid CSRF session token');
-            return 'Invalid CSRF session token';
-            exit;
+            throw new InvalidCsrfTokenException('Invalid CSRF session token');
         }
 
         if (!$multiple) {
@@ -72,22 +68,18 @@ class EasyCSRF
         }
 
         if ($this->referralHash() !== substr(base64_decode($sessionToken), 10, 40)) {
-            // throw new InvalidCsrfTokenException('Invalid CSRF token');
-            return 'Invalid CSRF token';
-            exit;
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+            // return 'Invalid CSRF token';
+            // exit;
         }
 
         if ($token !== $sessionToken) {
-            // throw new InvalidCsrfTokenException('Invalid CSRF token');
-            return 'CSRF token not found';
-            exit;
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
 
         // Check for token expiration
         if (is_int($timespan) && (intval(substr(base64_decode($sessionToken), 0, 10)) + $timespan) < time()) {
-            // throw new InvalidCsrfTokenException('CSRF token has expired');
-            return 'CSRF token has expired';
-            exit;
+            throw new InvalidCsrfTokenException('CSRF token has expired');
         }
 
         return true;
@@ -122,6 +114,10 @@ class EasyCSRF
      */
     protected function referralHash()
     {
+        if (empty($_SERVER['HTTP_USER_AGENT'])) {
+            return sha1($_SERVER['REMOTE_ADDR']);
+        }
+
         return sha1($_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']);
     }
 

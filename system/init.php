@@ -1,22 +1,28 @@
 <?php
 
-require_once 'core/CanThink/autoload.php';
-require_once 'core/Config.php';
-require_once 'core/Authentication.php';
-require_once 'core/App.php';
-require_once 'core/API.php';
-require_once 'core/ExtendedReflectionClass.php';
-require_once 'core/Controller.php';
-require_once 'core/Model.php';
-require_once 'core/Database.php';
-require_once 'core/Seeder.php';
-require_once 'core/Input.php';
-require_once 'core/SessionInterface.php';
-require_once 'core/SessionManager.php';
-
-require_once 'core/DbObject.php';
-require_once 'config/config.php';
 require_once '../vendor/autoload.php';
+
+// import env
+require_once 'core/MVC/Config.php';
+
+use Configuration\Config;
+(new Config('../.env'))->load();
+
+require_once 'config/app.php';
+
+// load files
+foreach ($service['providers'] as $files) {
+    require_once $files.".php";
+}
+
+/*
+|--------------------------------------------------------------------------
+| Register models
+|--------------------------------------------------------------------------
+|
+| The section will autoload all models class in folder app/models.
+|
+*/
 
 spl_autoload_register(function ($class) {
     $fileName = "../app/models/" . $class . ".php";
@@ -26,3 +32,25 @@ spl_autoload_register(function ($class) {
         return "The file $class does not exist";
     }
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Helper (Global Function)
+|--------------------------------------------------------------------------
+|
+| The section will autoload custom function used in this framework.
+|
+*/
+
+$dontLoadFiles = array(
+    '.',
+    '..',
+);
+
+$pathToHelper = '../system/core/Helpers';
+$HelperFiles = array_diff(scandir($pathToHelper), $dontLoadFiles);
+
+foreach ($HelperFiles as $key => $htf) {
+    require_once($pathToHelper . '/' . $htf);
+}

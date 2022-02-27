@@ -1,9 +1,13 @@
-<?php /** @noinspection PhpUnused */
+<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection UnknownInspectionInspection */
+
+/** @noinspection PhpUnused */
 
 namespace eftec\bladeone;
 
 /*
- * Its an example of a custom set of functions for bladeone.
+ * It's an example of a custom set of functions for bladeone.
  * in examples/TestCustom.php there is a working example
  */
 
@@ -23,7 +27,7 @@ trait BladeOneCustom
     protected function compilePanel($expression)
     {
         $this->customItem[] = 'Panel';
-        return $this->phpTag . "echo \$this->panel{$expression}; ?>";
+        return $this->phpTag . "echo \$this->panel$expression; ?>";
     }
 
     protected function compileEndPanel()

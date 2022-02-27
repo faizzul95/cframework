@@ -42,7 +42,7 @@ abstract class DBAdapter implements DatabaseInterface
      */
     public function makeQueryString(string $query, ColumnCollection $columns): string
     {
-        return 'SELECT '.implode(', ', $columns->names())." FROM ($query)t";
+        return 'SELECT `'.implode('`, `', $columns->names())."` FROM ($query)t";
     }
 
     /**
@@ -92,5 +92,14 @@ abstract class DBAdapter implements DatabaseInterface
     public function makeLimitString(int $take, int $skip)
     {
         return " LIMIT $take OFFSET $skip";
+    }
+
+    /**
+     * @param $query
+     * @return string
+     */
+    public function getQueryString($query)
+    {
+        return $query;
     }
 }

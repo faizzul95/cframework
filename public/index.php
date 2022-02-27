@@ -5,7 +5,7 @@ if (!session_id()) {
 }
 
 // Valid PHP Version?
-$minPHPVersion = '7.4';
+$minPHPVersion = '8.0';
 if (phpversion() < $minPHPVersion) {
     die("Your PHP version must be {$minPHPVersion} or higher to run CanThink Framework. Current version: " . phpversion());
 }

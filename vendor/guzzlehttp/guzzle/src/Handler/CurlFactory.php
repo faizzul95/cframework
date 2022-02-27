@@ -355,8 +355,8 @@ class CurlFactory implements CurlFactoryInterface
                 $conf[\CURLOPT_SSL_VERIFYHOST] = 0;
                 $conf[\CURLOPT_SSL_VERIFYPEER] = false;
             } else {
-                $conf[\CURLOPT_SSL_VERIFYHOST] = 0;
-                $conf[\CURLOPT_SSL_VERIFYPEER] = false;
+                $conf[\CURLOPT_SSL_VERIFYHOST] = 2;
+                $conf[\CURLOPT_SSL_VERIFYPEER] = true;
                 if (\is_string($options['verify'])) {
                     // Throw an error if the file/folder/link path is not valid or doesn't exist.
                     if (!\file_exists($options['verify'])) {
@@ -366,9 +366,11 @@ class CurlFactory implements CurlFactoryInterface
                     // If not, it's probably a file, or a link to a file, so use CURLOPT_CAINFO.
                     if (
                         \is_dir($options['verify']) ||
-                        (\is_link($options['verify']) === true &&
+                        (
+                            \is_link($options['verify']) === true &&
                             ($verifyLink = \readlink($options['verify'])) !== false &&
-                            \is_dir($verifyLink))
+                            \is_dir($verifyLink)
+                        )
                     ) {
                         $conf[\CURLOPT_CAPATH] = $options['verify'];
                     } else {
