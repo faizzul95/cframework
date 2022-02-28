@@ -4,6 +4,7 @@ if (isset($_POST['fileName'])) {
     $filename = $_POST['fileName'];
     $data = $_POST['dataArray'];
     $filePath = "../../../app/views/$filename";
+
     if (file_exists($filePath)) {
         $opts = array(
             'http' =>

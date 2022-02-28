@@ -18,6 +18,7 @@ $service = [
          * CanThink Core Files...
         */
         "config/settings",
+        "config/auditTrail",
         "core/MVC/App",
         "core/MVC/ExtendedReflectionClass",
         "core/MVC/Controller",

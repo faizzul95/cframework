@@ -14,10 +14,11 @@ function trailPreviousData($table, $pkValue, $pkTable = NULL)
 
 function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
 {
+    global $audit;
 
-    $auditTable = $_ENV['audit_table'];
+    $auditTable = $audit['audit_table'];
 
-    $config['audit_enable'] = filter_var($_ENV['audit_enable'], FILTER_VALIDATE_BOOLEAN);
+    $config['audit_enable'] = filter_var($audit['audit_enable'], FILTER_VALIDATE_BOOLEAN);
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +29,7 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     | You may add those tables that you don't want to perform audit.
     |
     */
-    $config['not_allowed_tables'] = [$auditTable, 'test_table'];
+    $config['not_allowed_tables'] = [$auditTable];
 
     /*
     |--------------------------------------------------------------------------
@@ -38,7 +39,7 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     | Set [TRUE/FALSE] to track insert event.
     |
     */
-    $config['track_insert'] = filter_var($_ENV['track_insert'], FILTER_VALIDATE_BOOLEAN);
+    $config['track_insert'] = filter_var($audit['track_insert'], FILTER_VALIDATE_BOOLEAN);
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +49,7 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     | Set [TRUE/FALSE] to track update event
     |
     */
-    $config['track_update'] = filter_var($_ENV['track_update'], FILTER_VALIDATE_BOOLEAN);
+    $config['track_update'] = filter_var($audit['track_update'], FILTER_VALIDATE_BOOLEAN);
 
     /*
     |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     | Set [TRUE/FALSE] to track delete event
     |
     */
-    $config['track_delete'] = filter_var($_ENV['track_delete'], FILTER_VALIDATE_BOOLEAN);
+    $config['track_delete'] = filter_var($audit['track_delete'], FILTER_VALIDATE_BOOLEAN);
 
     //return without save resource
     if (!$status) return 1;  // event not performed
@@ -83,8 +84,8 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     insert(
         $auditTable,
         [
-            'user_id' => session()->get('userID'),
-            'user_fname' => session()->get('fullname'),
+            'user_id' => session()->get('userID') ?? 0,
+            'user_fname' => session()->get('fullname') ?? 'guest',
             'event' => $event,
             'table_name' => $table,
             'old_values' => $old_value,

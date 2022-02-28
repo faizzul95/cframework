@@ -11,6 +11,7 @@ class App
     $this->session = new \Configuration\SessionManager();
     $url = $this->urlParse();
 
+    $systemController = $this->systemController();
     $controllerName = $methodName = '';
 
     // method / function name
@@ -35,7 +36,13 @@ class App
       exit();
     }
 
-    require_once '../app/controllers/' . $this->controller . '.php';
+    if (in_array($this->controller, $systemController))
+    {
+      require_once '../system/core/MVC/' . $this->controller . '.php';
+    }else{
+      require_once '../app/controllers/' . $this->controller . '.php';
+    }
+
     $this->controller = new $this->controller;
 
     // method / function name
@@ -89,7 +96,14 @@ class App
 
   public function checkController($url)
   {
-    if (!file_exists('../app/controllers/' . ucfirst($url) . '.php')) {
+    if (in_array(ucfirst($url), $this->systemController()))
+    {
+      $filesPath = '../system/core/MVC/' . ucfirst($url) . '.php';
+    }else{
+      $filesPath = '../app/controllers/' . ucfirst($url) . '.php';
+    }
+
+    if (!file_exists($filesPath)) {
       // throw new Exception('Controller Not exist.');
       return false;
     }
@@ -115,5 +129,10 @@ class App
 
       return $url;
     }
+  }
+
+  public function systemController()
+  {
+    return ["Migrate", "Seed", "Sysadmin"];
   }
 }

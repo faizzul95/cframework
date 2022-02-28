@@ -6,8 +6,6 @@ class AuditTrail
 
     public function up()
     {
-        //$table = $_ENV['audit_table']; // get from file env
-
         $column =  [
             'id' => array(
                 'type' => 'INT',
@@ -16,12 +14,12 @@ class AuditTrail
                 'auto_increment' => TRUE,
                 'null' => FALSE,
             ),
-            'usr_id' => array(
+            'user_id' => array(
                 'type' => 'INT',
                 'length' => 11,
                 'null' => TRUE
             ),
-            'usr_fname' => array(
+            'user_fname' => array(
                 'type' => 'VARCHAR',
                 'length' => 255,
                 'null' => TRUE

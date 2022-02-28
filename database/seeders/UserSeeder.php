@@ -36,6 +36,6 @@ class UserSeeder extends Seeder
 
         $class = get_class($this);
 
-        echo "$class running succesfully <br>";
+        echo "<b style='color:red'><i>{$class}</i></b> running succesfully <br>";
     }
 }

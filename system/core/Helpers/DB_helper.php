@@ -150,14 +150,14 @@ function save($table, $data)
         }
     }
 
-    $pkValue = (isset($data[$pkTable])) ? $data[$pkTable] : NULL; //set pk value
+    $pkValue = (isset($data[$pkColumnName])) ? $data[$pkColumnName] : NULL; //set pk value
 
-    if (isset($dataInsert[$pkTable])) {
-        unset($dataInsert[$pkTable]); // auto increment, no need to update or insert
+    if (isset($dataInsert[$pkColumnName])) {
+        unset($dataInsert[$pkColumnName]); // auto increment, no need to update or insert
     }
 
     if (!empty($exist)) {
-        $id = $exist[$pkTable]; // get pk from table
+        $id = $exist[$pkColumnName]; // get pk from table
         return update($table, $dataInsert, $id, $pkColumnName);
     } else {
         return insert($table, $dataInsert);
