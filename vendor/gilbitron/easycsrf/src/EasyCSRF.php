@@ -55,12 +55,16 @@ class EasyCSRF
         $key = $this->sanitizeKey($key);
 
         if (!$token) {
-            throw new InvalidCsrfTokenException('Invalid CSRF token');
+            // throw new InvalidCsrfTokenException('Invalid CSRF token');
+            return 'Invalid CSRF token';
+            exit;
         }
 
         $sessionToken = $this->session->get($this->session_prefix . $key);
         if (!$sessionToken) {
-            throw new InvalidCsrfTokenException('Invalid CSRF session token');
+            // throw new InvalidCsrfTokenException('Invalid CSRF session token');
+            return 'Invalid CSRF session token';
+            exit;
         }
 
         if (!$multiple) {
@@ -68,18 +72,22 @@ class EasyCSRF
         }
 
         if ($this->referralHash() !== substr(base64_decode($sessionToken), 10, 40)) {
-            throw new InvalidCsrfTokenException('Invalid CSRF token');
-            // return 'Invalid CSRF token';
-            // exit;
+            // throw new InvalidCsrfTokenException('Invalid CSRF token');
+            return 'Invalid CSRF token';
+            exit;
         }
 
         if ($token !== $sessionToken) {
-            throw new InvalidCsrfTokenException('Invalid CSRF token');
+            // throw new InvalidCsrfTokenException('Invalid CSRF token');
+            return 'Invalid CSRF token';
+            exit;
         }
 
         // Check for token expiration
         if (is_int($timespan) && (intval(substr(base64_decode($sessionToken), 0, 10)) + $timespan) < time()) {
-            throw new InvalidCsrfTokenException('CSRF token has expired');
+            // throw new InvalidCsrfTokenException('CSRF token has expired');
+            return 'CSRF token has expired';
+            exit;
         }
 
         return true;
