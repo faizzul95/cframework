@@ -2,21 +2,25 @@
 
 class AuditTrail
 {
-    protected $table = 'audit_trails';
+    protected $table = 'pmo_audit_trails';
 
     public function up()
     {
         $column =  [
             'id' => array(
-                'type' => 'INT',
-                'length' => 11,
+                'type' => 'BIGINT',
                 'unsigned' => TRUE,
                 'auto_increment' => TRUE,
                 'null' => FALSE,
             ),
             'user_id' => array(
-                'type' => 'INT',
-                'length' => 11,
+                'type' => 'BIGINT',
+                'unsigned' => TRUE,
+                'null' => TRUE
+            ),
+            'role_id' => array(
+                'type' => 'BIGINT',
+                'unsigned' => TRUE,
                 'null' => TRUE
             ),
             'user_fname' => array(
@@ -35,11 +39,11 @@ class AuditTrail
                 'null' => TRUE
             ),
             'old_values' => array(
-                'type' => 'TEXT',
+                'type' => 'LONGTEXT',
                 'null' => TRUE
             ),
             'new_values' => array(
-                'type' => 'TEXT',
+                'type' => 'LONGTEXT',
                 'null' => TRUE
             ),
             'url' => array(
@@ -61,7 +65,8 @@ class AuditTrail
 
         $key = [
             1 => ['type' => 'PRIMARY KEY', 'reference' => 'id'],
-            2 => ['type' => 'INDEX', 'reference' => 'usr_id'],
+            2 => ['type' => 'INDEX', 'reference' => 'user_id'],
+            3 => ['type' => 'INDEX', 'reference' => 'role_id'],
         ];
 
         migrate($this->table, $column, $key);
@@ -70,7 +75,8 @@ class AuditTrail
 
     public function down()
     {
-        // empty
+        dropTable($this->table);
+        echo "Table <b style='color:red'><i>{$this->table}</i></b> drop succesfully <br>";
     }
 
     public function relation()
@@ -78,3 +84,14 @@ class AuditTrail
         // empty
     }
 }
+
+// type => INT, TINYINT, BIGINT, CHAR, VARCHAR, TEXT, DATE, YEAR, TIMESTAMP, DATE, TIME, DATETIME, DECIMAL, FLOAT, BOOLEAN, ENUM
+// unsigned => TRUE / FALSE
+// auto_increment => TRUE / FALSE
+// null => TRUE / FALSE
+// length
+// comment
+// default
+// rename => (only use to change column name)
+// after => (add column after tablename)
+// drop => TRUE (remove if dont want to drop)

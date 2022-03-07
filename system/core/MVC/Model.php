@@ -166,6 +166,13 @@ class Model
         return save($obj->table, $data);
     }
 
+    public static function bulkData($data = array())
+    {
+        $className = get_called_class();
+        $obj = new $className;
+        return insertMulti($obj->table, $data, true);
+    }
+
     public static function delete($id = NULL, $pkTable = NULL)
     {
         $id = escape($id);

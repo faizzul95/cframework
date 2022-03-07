@@ -78,7 +78,7 @@ function genCode($str, $table, $column, $codeLength = 4)
         }
     }
 
-    $codeCnt = db()->rawQueryOne("select count(*)+1 as cnt from {$table} where {$column} like '{$code}_%'");
+    $codeCnt = rawQuery("select count(*)+1 as cnt from {$table} where {$column} like '{$code}_%'");
     return $code . $codeCnt['cnt'];
 }
 

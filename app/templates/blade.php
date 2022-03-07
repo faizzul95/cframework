@@ -4,7 +4,7 @@
 <!--begin::Head-->
 
 <head>
-    <base href="">
+    <base href="{{ base_url }}">
     <title> {{ $title }} | {{ $_ENV['APP_NAME'] }} </title>
     <meta charset="utf-8" />
     <meta name="description" content="Cathink Framework by Canthink Solution" />
@@ -58,12 +58,15 @@
 
     <!--begin::Global Stylesheets Bundle(used by all pages)-->
     <link href="{{ asset('framework/css/pre.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('framework/css/jquery.skeleton.css') }}" rel="stylesheet" type="text/css"/>
+
     <!--end::Global Stylesheets Bundle-->
 
     <!--begin::Javascript-->
     <!--begin::Global Javascript Bundle(used by all pages)-->
     <script src="{{ asset('framework/js/axios.min.js') }}"></script>
     <script src="{{ asset('framework/js/common.js') }}"></script>
+    <script src="{{ asset('framework/js/jquery.scheletrone.js') }}"></script>
     <!--end::Global Javascript Bundle-->
 
 

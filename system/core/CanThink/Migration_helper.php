@@ -27,15 +27,17 @@ function migrate($table, $column = array(), $key = array())
 
     $defaultLength = array(
         'TEXT' => NULL,
-        'BIGINT' => NULL,
+        'LONGTEXT' => NULL,
+        'TINYTEXT' => NULL,
         'TIME' => NULL,
         'DATE' => NULL,
         'TIMESTAMP' => NULL,
         'DATETIME' => NULL,
         'BLOB' => NULL,
-        'VARCHAR' => '255',
         'TINYINT' => '4',
+        'BIGINT' => NULL,
         'CHAR' => '5',
+        'VARCHAR' => '255',
         'DECIMAL' => '10,4',
     );
 
@@ -156,8 +158,8 @@ function migrate($table, $column = array(), $key = array())
                 if (isset($set['drop']) === TRUE) {
                     array_push($columnArray, trim("DROP `$columnName`"));
                 } else {
-                    if (isset($set['name'])) {
-                        $newName = $set['name'];
+                    if (isset($set['rename'])) {
+                        $newName = $set['rename'];
                         array_push($columnArray, trim("CHANGE `$columnName` `$newName` $type $length $unsigned $default $autoIncrement $comment $addAfter"));
                     } else {
                         array_push($columnArray, trim("CHANGE `$columnName` `$columnName` $type $length $unsigned $default $autoIncrement $comment $addAfter"));

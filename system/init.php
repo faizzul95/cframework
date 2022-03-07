@@ -6,13 +6,14 @@ require_once '../vendor/autoload.php';
 require_once 'core/MVC/Config.php';
 
 use Configuration\Config;
+
 (new Config('../.env'))->load();
 
 require_once 'config/app.php';
 
 // load files
 foreach ($service['providers'] as $files) {
-    require_once $files.".php";
+    require_once $files . ".php";
 }
 
 /*
@@ -33,10 +34,9 @@ spl_autoload_register(function ($class) {
     }
 });
 
-
 /*
 |--------------------------------------------------------------------------
-| Helper (Global Function)
+| CanThink Helper (Global Function)
 |--------------------------------------------------------------------------
 |
 | The section will autoload custom function used in this framework.
@@ -48,9 +48,31 @@ $dontLoadFiles = array(
     '..',
 );
 
+$pathToCanThink = '../system/core/CanThink';
+$CanThinkFiles = array_diff(scandir($pathToCanThink), $dontLoadFiles);
+
+/*
+|--------------------------------------------------------------------------
+| Custom Helper (Global Function)
+|--------------------------------------------------------------------------
+|
+| The section will autoload custom function used in this framework.
+|
+*/
+
 $pathToHelper = '../system/core/Helpers';
 $HelperFiles = array_diff(scandir($pathToHelper), $dontLoadFiles);
 
-foreach ($HelperFiles as $key => $htf) {
-    require_once($pathToHelper . '/' . $htf);
+
+/*
+|--------------------------------------------------------------------------
+| Merge All files to be include
+|--------------------------------------------------------------------------
+*/
+
+$allFiles = array_merge($CanThinkFiles, $HelperFiles);
+
+foreach ($allFiles as $key => $helperFile) {
+    $pathFile = (file_exists($pathToCanThink . '/' . $helperFile)) ? $pathToCanThink : $pathToHelper;
+    require_once($pathFile . '/' . $helperFile);
 }

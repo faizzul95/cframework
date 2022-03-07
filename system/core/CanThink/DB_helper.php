@@ -15,7 +15,7 @@ function db($dbConn = NULL)
 
 function db_name($debug = false)
 {
-    if($debug) 
+    if ($debug)
         dd(DB_NAME);
     else
         return DB_NAME;
@@ -142,7 +142,7 @@ function save($table, $data)
     $exist = $db->fetchRow($table);
 
     $dataInsert = (isAssociative($data)) ?  $data : ((!empty($exist)) ? $data[1] : merge($data[0], $data[1]));
- 
+
     // remove all column field that does't exist in db
     foreach ($dataInsert as $key => $value) {
         if (!isColumnExist($table, $key)) {

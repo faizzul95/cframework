@@ -1,4 +1,4 @@
-DOCUMENTATION CANTHINK v0.4 (Update 19/12/2021 By Fahmy)
+DOCUMENTATION CANTHINK v0.5 (Update 7/03/2022 By Fahmy)
 ================================================================================================
 
 SIMPLE DOCUMENTATION FOR VIEW
@@ -48,12 +48,13 @@ STATIC METHOD / FUNCTION AVAILABLE (USE ONLY IN CONTROLLER)
     8) insert($array)
     9) updateOrInsert($array)
     10) update($array)
-    11) delete($value, $columnName)
+    11) bulkData($array)
+    12) delete($value, $columnName)
 
 Notes : 
  - for more global function please go to folder 
-     1) system/core/Model.php 
-     2) system/CanThink - all files
+     1) system/core/MVC/Model.php 
+     2) system/core/CanThink - all files
 
  Reminder :
  - Please avoid using save name as static method@function in MODEL (folder app/models). Controller is fine to redeclare same function name.

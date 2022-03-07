@@ -36,10 +36,9 @@ class App
       exit();
     }
 
-    if (in_array($this->controller, $systemController))
-    {
+    if (in_array($this->controller, $systemController)) {
       require_once '../system/core/MVC/' . $this->controller . '.php';
-    }else{
+    } else {
       require_once '../app/controllers/' . $this->controller . '.php';
     }
 
@@ -68,8 +67,9 @@ class App
       $this->params = array_values($url);
     }
 
-    call_user_func_array([$this->controller, $this->method], $this->params);
+    // dd($this->controller, $this->method, $this->params);
 
+    call_user_func_array([$this->controller, $this->method], $this->params);
 
     // if (isAjax()) {
     //   call_user_func_array([$this->controller, $this->method], $this->params);
@@ -96,10 +96,9 @@ class App
 
   public function checkController($url)
   {
-    if (in_array(ucfirst($url), $this->systemController()))
-    {
+    if (in_array(ucfirst($url), $this->systemController())) {
       $filesPath = '../system/core/MVC/' . ucfirst($url) . '.php';
-    }else{
+    } else {
       $filesPath = '../app/controllers/' . ucfirst($url) . '.php';
     }
 

@@ -1,15 +1,18 @@
 <?php
 
-function getCurrentUserID(){
+function getCurrentUserID()
+{
     return session()->get('userID');
 }
 
-function getCurrentUserRole(){
+function getCurrentUserRole()
+{
     return session()->get('roleID');
 }
 
-function getCurrentRole(){
-
+function getCurrentRoleName()
+{
+    return session()->get('roleName');
 }
 
 function getMenu()

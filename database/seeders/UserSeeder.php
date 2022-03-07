@@ -16,10 +16,7 @@ class UserSeeder extends Seeder
 
     protected function _createDefaultUser()
     {
-        $users = [
-            1 => ['name' => 'CanThink Administrator', 'nickname' => 'Administrator', 'email' => 'admin@developer.com', 'role' => 0],
-            2 => ['name' => 'Mohd Fahmy Izwan', 'nickname' => 'Fahmy', 'email' => 'fahmy@developer.com', 'role' => 1],
-        ];
+        $users = $this->_dataSeed();
 
         foreach ($users as $id => $user) {
             Users::save([
@@ -28,7 +25,6 @@ class UserSeeder extends Seeder
                 'user_preferred_name' => $user['nickname'],
                 'user_email' => $user['email'],
                 'user_avatar' => 'default/user.png',
-                'role_id' => $user['role'],
                 'user_status' => '1',
                 'user_password' => password_hash('password', PASSWORD_DEFAULT)
             ]);
@@ -37,5 +33,13 @@ class UserSeeder extends Seeder
         $class = get_class($this);
 
         echo "<b style='color:red'><i>{$class}</i></b> running succesfully <br>";
+    }
+
+    public function _dataSeed()
+    {
+        return [
+            1 => ['name' => 'CanThink Administrator', 'nickname' => 'Administrator', 'email' => 'admin@developer.com'],
+            2 => ['name' => 'Mohd Fahmy Izwan', 'nickname' => 'Fahmy', 'email' => 'fahmy@developer.com'],
+        ];
     }
 }

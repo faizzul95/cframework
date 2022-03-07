@@ -85,6 +85,8 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
         $auditTable,
         [
             'user_id' => session()->get('userID') ?? 0,
+            'role_id' => session()->get('roleID') ?? 0,
+            'cpy_id' => session()->get('cpyID') ?? 0,
             'user_fname' => session()->get('fullname') ?? 'guest',
             'event' => $event,
             'table_name' => $table,

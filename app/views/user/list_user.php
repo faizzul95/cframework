@@ -25,7 +25,7 @@
 
         </div>
 
-        <div class="container-fluid mt-5 mb-10">
+        <div id="divl" class="container-fluid mt-5 mb-10">
 
             <!-- This div are required -->
             <div id="nodatadiv" style="display: none;"> {{ nodata() }} </div>

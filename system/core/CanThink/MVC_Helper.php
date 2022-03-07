@@ -25,7 +25,7 @@ function view($view, $data = [], $type = true)
             $blade->setBaseUrl(base_url . 'public/'); // with or without trail slash
             echo $blade->run($file, $data);
         } catch (Exception $e) {
-            echo "error found ".$e->getMessage()."<br>".$e->getTraceAsString();
+            echo "error found " . $e->getMessage() . "<br>" . $e->getTraceAsString();
         }
     } else {
         require_once '../app/views/' . $view . '.php';
@@ -100,7 +100,8 @@ function message($code, $text = 'create')
     }
 }
 
-function _requestStatus($code) {
+function _requestStatus($code)
+{
 
     $status = array(
         200 => 'OK',
@@ -118,7 +119,7 @@ function _requestStatus($code) {
         500 => 'Internal Server Error',         // all other errors
         501 => 'Not Implemented'                // (currently) unsupported request method
     );
-    
+
     return (isset($status[$code]) ? $status[$code] : $status[500]);
 }
 
@@ -381,4 +382,3 @@ function timestamp()
 {
     return date('Y-m-d H:i:s');
 }
-
