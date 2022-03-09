@@ -15,6 +15,7 @@ class Migrate
     // migrate specific files
     public function file($classNameRun = NULL, $drop = NULL)
     {
+        removeAllRelation(); // remove all Constrain / relation table first before migrate
         if (empty($drop)) {
             // echo "===== Migration start ===== <br><br>";
             $filename = "../database/migrations/$classNameRun.php";
@@ -57,6 +58,7 @@ class Migrate
             }
             // echo "<br> ===== Migration ended ===== <br><br>";
         }
+        $this->relation(); // add relation table back
     }
 
     // migrate all files
@@ -88,7 +90,6 @@ class Migrate
         }
         // echo "<br> ===== Migration ended ===== <br><br>";
         $this->relation(); // add relation table back
-        die;
     }
 
     // relation

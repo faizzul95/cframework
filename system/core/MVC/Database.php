@@ -262,7 +262,7 @@ class Database
      * @param string $charset
      * @param string $socket
      */
-    public function __construct($host = DB_HOST, $username = DB_USERNAME, $password = DB_PASSWORD, $db = DB_NAME, $port = DB_PORT, $charset = DB_SOCKET, $socket = DB_PORT)
+    public function __construct($host = DB_HOST, $username = DB_USERNAME, $password = DB_PASSWORD, $db = DB_NAME, $port = DB_PORT, $charset = DB_CHARSET, $socket = DB_SOCKET)
     {
         $isSubQuery = false;
 

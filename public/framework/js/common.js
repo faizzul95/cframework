@@ -1,3 +1,8 @@
+// set default code
+var successStatus = [200, 201];
+var unauthorizedStatus = [401, 403];
+var errorStatus = [500, 422];
+
 async function submitForm(url, form, formID = null, reloadFunction = null) {
     const submitBtnText = $('#submitBtn').html();
     loadingBtn('submitBtn', true, submitBtnText);
@@ -81,11 +86,6 @@ async function deleteApi(id, url)
         url = $('meta[name="base_url"]').attr('content')+url;
 
         try {
-            const data = new URLSearchParams({ 
-                id: id,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            });
-            
             return axios({
                 method: 'POST',
                 headers: { 
@@ -93,7 +93,10 @@ async function deleteApi(id, url)
                     'content-type': 'application/x-www-form-urlencoded' 
                 },
                 url: url,
-                data: data
+                data: new URLSearchParams({ 
+                    id: id,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                })
             }); 
     
         } catch (e) {
@@ -110,11 +113,6 @@ async function callApi(method = 'POST', url, dataObj = null)
 {
     url = $('meta[name="base_url"]').attr('content')+url;
 
-    const data = new URLSearchParams({ 
-        data: dataObj,
-        _token: $('meta[name="csrf-token"]').attr('content')
-    });
-
     try {
         return axios({
             method: method,
@@ -123,11 +121,30 @@ async function callApi(method = 'POST', url, dataObj = null)
                 'content-type': 'application/x-www-form-urlencoded' 
             },
             url: url,
-            data: data
+            data: new URLSearchParams({ 
+                data: dataObj,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            })
         }); 
     } catch (e) {
         const res = e.response;
-        return res;
+
+        if (isUnauthorized(res.status)) {
+            location.href = '/';
+        } else {
+            if (isError(res.status)) {
+                var error_count = 0;
+                for (var error in res.data.errors) {
+                    if (error_count == 0) {
+                        noti(400, res.data.errors[error][0]);
+                    }
+                    error_count++;
+                }
+            } else {
+                noti(400);
+            }
+            return res;
+        }
     }
 }
 
@@ -204,4 +221,27 @@ function isset(variable_name) {
     }
 
     return false;
+}
+
+function isSuccess(res) {
+    const status = typeof res === 'number' ? res : res.status;
+    if(!this.successStatus.includes(status)){
+        noti(status);
+    }else{
+        return this.successStatus.includes(status);
+    }
+}
+
+function isError(res) {
+    const status = typeof res === 'number' ? res : res.status;
+    return this.errorStatus.includes(status);
+}
+
+function isUnauthorized(res) {
+    const status = typeof res === 'number' ? res : res.status;
+    if(!this.successStatus.includes(status)){
+        noti(status, "Unauthorized: Access is denied");
+    }else{
+        return this.unauthorizedStatus.includes(status);
+    }
 }

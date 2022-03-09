@@ -297,3 +297,12 @@ function getClassNameFromFile($filePathName)
 
     return $classes[0];
 }
+
+function replaceTextWithData($string = null, $arrayOfStringToReplace = array(), $prefix = '%', $suffix = '%'){
+    return str_replace(array_keys($prefix.$arrayOfStringToReplace.$suffix), array_values($arrayOfStringToReplace), $string);
+    
+    // foreach($arrayOfStringToReplace as $index => $value){
+    //     $string = str_replace($prefix.$index.$suffix, $value, $string);
+    // }
+}
+
