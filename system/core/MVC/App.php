@@ -67,9 +67,16 @@ class App
       $this->params = array_values($url);
     }
 
-    // dd($this->controller, $this->method, $this->params);
+    if (isAjax()) {
+      if (validateCsrf(2, getBearerToken()) === true) {
+        call_user_func_array([$this->controller, $this->method], $this->params);
+      } else {
+        http_response_code(401);
+      }
+    } else {
+      call_user_func_array([$this->controller, $this->method], $this->params);
+    }
 
-    call_user_func_array([$this->controller, $this->method], $this->params);
 
     // if (isAjax()) {
     //   call_user_func_array([$this->controller, $this->method], $this->params);

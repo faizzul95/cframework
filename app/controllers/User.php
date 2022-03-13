@@ -38,7 +38,7 @@ class User extends Controller
     // use in list_user for client side datatable (with csrf)
     public function getAll()
     {
-        (validateCsrf() === true) ? json(users::all()) : json(["resCode" => 400, "message" => validateCsrf()]);
+        json(users::all());
     }
 
     // use in list_user2 for server side datatable

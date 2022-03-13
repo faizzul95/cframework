@@ -35,7 +35,7 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label> Email <span class="text-danger">*</span> </label>
-                <input type="email" id="user_email" name="user_email" class="form-control" maxlength="25" autocomplete="off" required>
+                <input type="text" id="user_email" name="user_email" class="form-control" maxlength="25" autocomplete="off" required>
             </div>
         </div>
         <div class="col-lg-6">
@@ -81,16 +81,17 @@
                 cancelButton: 'btn btn-danger'
             },
             reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 1st param = url to function in controller
-                // 2nd param = form that have been convert and encode to array
-                // 3rd param = id form (required)
-                // 4th param = functionName to reload (if needed) 
-                //             if want to reload. example : getDataList() <-- remove () in param  
-                submitForm(url, form.serializeArray(), 'formUser', getDataList);
-            }
-        })
+        }).then(
+            async (result) => {
+                if (result.isConfirmed) {
+                    // 1st param = url to function in controller
+                    // 2nd param = form that have been convert and encode to array
+                    // 3rd param = id form (required)
+                    // 4th param = functionName to reload (if needed) 
+                    // if want to reload. example : getDataList() <-- remove () in param  
+                    const res = await submitApi(url, form.serializeArray(), 'formUser', getDataList);
+                }
+            })
     });
 </script>
 

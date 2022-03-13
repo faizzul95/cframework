@@ -5,7 +5,7 @@ class User_model extends Model
     protected $table      = 'users';
     protected $primaryKey = 'user_id';
     protected $uniqueKey = ['user_code', 'user_email', 'user_username'];
-    protected $foreignKey = ['role_id'];
+    protected $foreignKey = [];
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +21,6 @@ class User_model extends Model
         'user_username',
         'user_password',
         'user_avatar',
-        'role_id',
         'user_status',
     ];
 

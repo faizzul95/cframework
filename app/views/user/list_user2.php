@@ -115,7 +115,7 @@
                 // 1st param = id to delete
                 // 2nd param = url to function delete in controller
                 // 3rd functionName to reload (if needed) if want to reload. example : getDataList() <-- remove () in param  
-                deleteData(id, "user/delete", getDataList);
+                deleteApi(id, "user/delete", getDataList);
             }
         })
     }
@@ -147,8 +147,8 @@
     1) loadFormContent(fileToLoad, modalBodyID, modalSize, urlForm, modalTitle, data, modalType)
     2) loadFileContent(fileToLoad, modalBodyID, modalSize, modalTitle, data, modalType)
     3) callApi(methodToPost, url, id)
-    4) submitForm(url, dataFromFormToSubmit, formID, functionNameToReload)
-    5) deleteData(id, url, functionNameToReload)
+    4) submitApi(url, dataFromFormToSubmit, formID, functionNameToReload)
+    5) deleteApi(id, url, functionNameToReload)
     6) noti(codeResponse, textToDisplay)
     7) isset(value)
 
