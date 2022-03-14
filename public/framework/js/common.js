@@ -146,6 +146,19 @@ async function deleteApi(id, url, reloadFunction = null) {
 
 async function callApi(method = 'POST', url, dataObj = null) {
     url = $('meta[name="base_url"]').attr('content') + url;
+    if (isObject(dataObj) || isArray(dataObj)) {
+        dataArr = {}; // {} will create an object
+        for (var key in dataObj) {
+            if (dataObj.hasOwnProperty(key)) {
+                dataArr[key] = dataObj[key];
+            }
+        }
+        dataSent = new URLSearchParams(dataArr);
+    } else {
+        dataSent = new URLSearchParams({
+            id: dataObj
+        });
+    }
 
     try {
         return axios({
@@ -156,10 +169,7 @@ async function callApi(method = 'POST', url, dataObj = null) {
                     'content-type': 'application/x-www-form-urlencoded'
                 },
                 url: url,
-                data: new URLSearchParams({
-                    data: dataObj,
-                    // _token: $('meta[name="csrf-token"]').attr('content')
-                })
+                data: dataSent
             }).then(result => {
                 return result;
             })

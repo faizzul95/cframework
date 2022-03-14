@@ -49,14 +49,14 @@ class User extends Controller
 
     public function getUsersByID()
     {
-        $id = escape($_POST['data']);
+        $id = escape($_POST['id']);
         $data = users::find($id); // call static function
         json($data);
     }
 
     public function getUsersByCode()
     {
-        $code = escape($_POST['data']);
+        $code = escape($_POST['id']);
         $data = users::find($code, 'user_code'); // call static function
         json($data);
     }
