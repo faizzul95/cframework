@@ -12,12 +12,10 @@ class Migrate
         }
     }
 
-    // migrate specific files
+    // migrate specific filess
     public function file($classNameRun = NULL, $drop = NULL)
     {
-        removeAllRelation(); // remove all Constrain / relation table first before migrate
         if (empty($drop)) {
-            // echo "===== Migration start ===== <br><br>";
             $filename = "../database/migrations/$classNameRun.php";
             if (file_exists($filename)) {
                 require_once(str_replace('\\', '/', $filename));
@@ -31,16 +29,12 @@ class Migrate
                     $obj->up();
                 }
 
-                // check if function down is exist
-                // if (method_exists($obj, 'down')) {
-                //     $obj->down();
-                // }
+                $this->relation($classNameRun); // add relation
+
             } else {
                 echo "The file <b style='color:red'><i>$filename</i></b> does not exist <br>";
             }
-            // echo "<br> ===== Migration ended ===== <br><br>";
         } else {
-            // echo "===== Migration start ===== <br><br>";
             $filename = "../database/migrations/$classNameRun.php";
             if (file_exists($filename)) {
                 require_once(str_replace('\\', '/', $filename));
@@ -56,9 +50,7 @@ class Migrate
             } else {
                 echo "The file <b style='color:red'><i>$filename</i></b> does not exist <br>";
             }
-            // echo "<br> ===== Migration ended ===== <br><br>";
         }
-        $this->relation(); // add relation table back
     }
 
     // migrate all files
@@ -93,13 +85,28 @@ class Migrate
     }
 
     // relation
-    public function relation()
+    public function relation($className = NULL)
     {
-        // echo "===== Relation table start ===== <br><br>";
-        // removeAllRelation(); // remove all Constrain / relation table first before migrate
-        foreach (glob('../database/migrations/*.php') as $filename) {
-            if (file_exists($filename)) {
-                $className = getClassFullNameFromFile(str_replace('', "'\\'", $filename));
+        if (empty($className)) {
+            // removeAllRelation(); // remove all Constrain / relation table first before migrate
+            foreach (glob('../database/migrations/*.php') as $filename) {
+                if (file_exists($filename)) {
+                    $className = getClassFullNameFromFile(str_replace('', "'\\'", $filename));
+
+                    $obj = new $className; // create new object
+
+                    // // check if function relation is exist
+                    if (method_exists($obj, 'relation')) {
+                        $obj->relation();
+                    }
+                } else {
+                    echo "The file $filename does not exist";
+                }
+            }
+        } else {
+            $filename = glob("../database/migrations/$className.php");
+            if (file_exists($filename[0])) {
+                require_once(str_replace('\\', '/', $filename[0]));
                 $obj = new $className; // create new object
 
                 // check if function relation is exist
@@ -110,7 +117,6 @@ class Migrate
                 echo "The file $filename does not exist";
             }
         }
-        // echo "<br> ===== Relation table ended =====";
     }
 
     public function listFileMigrate()
@@ -120,7 +126,16 @@ class Migrate
         echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>';
         echo '<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
-        $url = url('migrate/all');
+        echo '<meta name="csrf-token" content="' . csrf_token() . '" />';
+        echo '<meta name="base_url" content="' . base_url . '" />';
+
+        echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" />';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous"></script>';
+
+        echo '<script src="' . base_url . 'public/framework/js/common.js"></script>';
+        echo '<script src="' . base_url . 'public/framework/js/axios.min.js"></script>';
+
+        $url = 'migrate/all';
         $urlSeed = url('seed');
 
         echo '<style>';
@@ -149,10 +164,10 @@ class Migrate
                                 <td width="3%">
                                     No
                                 </td>
-                                <td width="70%">
+                                <td width="50%">
                                     File Name
                                 </td>
-                                <td width="27%">
+                                <td width="47%">
                                     Action
                                 </td>
                             </tr>
@@ -165,13 +180,15 @@ class Migrate
             if (file_exists($file)) {
 
                 $filename = explode('/', $file);
-                $urlFiles = url('migrate/file/' . pathinfo(end($filename), PATHINFO_FILENAME));
+                $urlFiles = 'migrate/file/' . pathinfo(end($filename), PATHINFO_FILENAME);
+                $urlFilesRelation = 'migrate/relation/' . pathinfo(end($filename), PATHINFO_FILENAME);
                 echo '<tr>';
                 echo '<td><center> ' . $no++ . '</center></td>';
                 echo '<td>' . pathinfo(end($filename), PATHINFO_FILENAME) . '</td>';
                 echo '<td>
                             <center> 
                                 <a href="javascript:void(0)" onclick="migrateTable(\'' . $urlFiles . '\')"  class="btn btn-sm btn-primary"> <i class="fa fa-plus"> </i> Migrate </a>
+                                <a href="javascript:void(0)" onclick="relationTable(\'' . $urlFilesRelation . '\')"  class="btn btn-sm btn-info"> <i class="fa fa-plus"> </i> Relation </a>
                                 <a href="javascript:void(0)" onclick="dropTable(\'' . $urlFiles . '/drop\')"  class="btn btn-sm btn-danger"> <i class="fa fa-minus"> </i> Drop </a>
                             </center>
                         </td>';
@@ -210,6 +227,8 @@ class Migrate
         echo '<script>';
         echo 'function migrateTable(url){
 
+                var filename = url.substring(url.lastIndexOf("/") + 1);
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "This table will be added / updated !",
@@ -222,25 +241,24 @@ class Migrate
                         cancelButton: "btn btn-outline-danger"
                     },
                     reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            dataType: "HTML",
-                            beforeSend: function() {
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logMigrateShow").append(res.data);
                                 $("#logMigrateNoData").empty();
-                            },
-                            success: function(data) {
-                                console.log(data);
-                                $("#logMigrateShow").append(data);
+                            }else{
+                                noti(res.status);
                             }
-                        });
-                    }
+                        }
                 }) 
 
               }';
         echo 'function dropTable(url){
+
+                var filename = url.split("/").slice(-2)[0];
 
                 Swal.fire({
                     title: "Are you sure?",
@@ -254,20 +272,50 @@ class Migrate
                         cancelButton: "btn btn-outline-danger"
                     },
                     reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            dataType: "HTML",
-                            beforeSend: function() {
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logMigrateShow").append(res.data);
                                 $("#logMigrateNoData").empty();
-                            },
-                            success: function(data) {
-                                $("#logMigrateShow").append(data);
+                            }else{
+                                noti(res.status);
                             }
-                        });
-                    }
+                        }
+                })
+                
+            }';
+
+        echo 'function relationTable(url){
+
+                var filename = url.split("/").slice(-2)[1];
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Add relation for this files",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Discard",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                        cancelButton: "btn btn-outline-danger"
+                    },
+                    reverseButtons: true
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logMigrateShow").append(res.data);
+                                $("#logMigrateNoData").empty();
+                            }else{
+                                noti(res.status);
+                            }
+                        }
                 })
                 
             }';
@@ -286,21 +334,18 @@ class Migrate
                         cancelButton: "btn btn-outline-danger"
                     },
                     reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            dataType: "HTML",
-                            beforeSend: function() {
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logMigrateShow").append(res.data);
                                 $("#logMigrateNoData").empty();
-                            },
-                            success: function(data) {
-                                console.log(data);
-                                $("#logMigrateShow").append(data);
+                            }else{
+                                noti(res.status);
                             }
-                        });
-                    }
+                        }
                 }) 
 
               }';

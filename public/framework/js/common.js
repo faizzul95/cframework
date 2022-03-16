@@ -204,20 +204,37 @@ async function callApi(method = 'POST', url, dataObj = null) {
     }
 }
 
-function noti(code = 200, text = 'Save') {
-    toastr.options = {
-        preventDuplicates: true,
-        timeOut: 4000,
-        progressBar: true,
-        positionClass: "toast-top-right"
-    }
+function noti(code = 200, text = 'Save', typeToast = 'toast') {
+    // toastr.options = {
+    //     preventDuplicates: true,
+    //     timeOut: 4000,
+    //     progressBar: true,
+    //     positionClass: "toast-top-right"
+    // }
 
-    if (isSuccess(code)) {
-        toastr.success(ucfirst(text) + ' successfully');
-    } else {
-        toastr.error(text == 'save' ? "Ops! Something went wrong!" : text);
-        console.log(text);
+    // if (isSuccess(code)) {
+    //     toastr.success(ucfirst(text) + ' successfully');
+    // } else {
+    //     toastr.error(text == 'save' ? "Ops! Something went wrong!" : text);
+    //     console.log(text);
+    // }
+
+    if(typeToast == 'toast'){
+        cuteToast({
+            type : (isSuccess(code)) ? 'success' : 'error',
+            title : (isSuccess(code)) ? 'Great!' : 'Ops!',
+            message : (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            timer : 5000,
+        });
+    }else{
+        cuteAlert({
+            type : (isSuccess(code)) ? 'success' : 'error',
+            title : (isSuccess(code)) ? 'Great!' : 'Ops!',
+            message : (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            closeStyle : 'circle',
+        });
     }
+    
 }
 
 function log(inp) {

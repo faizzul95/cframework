@@ -64,7 +64,16 @@ class Seed
         echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>';
         echo '<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
 
-        $url = url('seed/all');
+        echo '<meta name="csrf-token" content="' . csrf_token() . '" />';
+        echo '<meta name="base_url" content="' . base_url . '" />';
+
+        echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" />';
+        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous"></script>';
+
+        echo '<script src="' . base_url . 'public/framework/js/common.js"></script>';
+        echo '<script src="' . base_url . 'public/framework/js/axios.min.js"></script>';
+
+        $url = 'seed/all';
         $urlMigrate = url('migrate');
 
         echo '<style>';
@@ -120,7 +129,7 @@ class Seed
                 $countTotalData = (method_exists($obj, '_dataSeed')) ? count($obj->_dataSeed()) : 0;
 
                 $filename = explode('/', $file);
-                $urlFiles = url('seed/file/' . pathinfo(end($filename), PATHINFO_FILENAME));
+                $urlFiles = 'seed/file/' . pathinfo(end($filename), PATHINFO_FILENAME);
                 echo '<tr>';
                 echo '<td><center> ' . $no++ . '</center></td>';
                 echo '<td>' . pathinfo(end($filename), PATHINFO_FILENAME) . '</td>';
@@ -165,6 +174,8 @@ class Seed
         echo '<script>';
         echo 'function seedTable(url){
 
+                var filename = url.substring(url.lastIndexOf("/") + 1);
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "This table will be seeding !",
@@ -177,21 +188,18 @@ class Seed
                         cancelButton: "btn btn-outline-danger"
                     },
                     reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            dataType: "HTML",
-                            beforeSend: function() {
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logSeedShow").append(res.data);
                                 $("#logSeedNoData").empty();
-                            },
-                            success: function(data) {
-                                console.log(data);
-                                $("#logSeedShow").append(data);
+                            }else{
+                                noti(res.status);
                             }
-                        });
-                    }
+                        }
                 }) 
 
               }';
@@ -211,21 +219,18 @@ class Seed
                         cancelButton: "btn btn-outline-danger"
                     },
                     reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: url,
-                            dataType: "HTML",
-                            beforeSend: function() {
+                }).then(
+                    async (result) => {
+                        if (result.isConfirmed) {
+                            const res = await callApi("post", url);
+                            if(isSuccess(res.status))
+                            {
+                                $("#logSeedShow").append(res.data);
                                 $("#logSeedNoData").empty();
-                            },
-                            success: function(data) {
-                                console.log(data);
-                                $("#logSeedShow").append(data);
+                            }else{
+                                noti(res.status);
                             }
-                        });
-                    }
+                        }
                 }) 
 
               }';

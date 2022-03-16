@@ -1,9 +1,9 @@
 // Alert box design by Igor Ferrão de Souza: https://www.linkedin.com/in/igor-ferr%C3%A3o-de-souza-4122407b/
 
 const cuteAlert = ({
-  type,
-  title,
-  message,
+  type = 'success',
+  title = null,
+  message = null,
   img,
   buttonText = 'OK',
   confirmText = 'OK',
@@ -23,7 +23,17 @@ const cuteAlert = ({
 
     const scripts = document.getElementsByTagName('script');
 
-    let src = '';
+    let src = '<?php echo base_url ?>';
+    
+    if(type == 'success'){
+      img = '/img/success.svg';
+    }else if (type == 'info'){
+      img = '/img/info.svg';
+    }else if (type == 'error'){
+      img = '/img/error.svg';
+    }else if (type == 'question'){
+      img = '/img/question.svg';
+    }
 
     for (let script of scripts) {
       if (script.src.includes('cute-alert.js')) {
@@ -117,13 +127,30 @@ const cuteAlert = ({
   });
 };
 
-const cuteToast = ({ type, message, timer = 5000,  vibrate = [], playSound = null }) => {
+const cuteToast = ({  
+  type = 'success',
+  title = null,
+  message = null,
+  timer = 5000,
+  img = '/img/success.svg',
+  vibrate = [],
+  playSound = null, }) => {
   return new Promise(resolve => {
     const body = document.querySelector('body');
 
     const scripts = document.getElementsByTagName('script');
 
-    let src = '';
+    let src = '<?php echo base_url ?>';
+    
+    if(type == 'success'){
+      img = '/img/success.svg';
+    }else if (type == 'info'){
+      img = '/img/info.svg';
+    }else if (type == 'error'){
+      img = '/img/error.svg';
+    }else if (type == 'question'){
+      img = '/img/question.svg';
+    }
 
     for (let script of scripts) {
       if (script.src.includes('cute-alert.js')) {

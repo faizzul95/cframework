@@ -73,7 +73,7 @@ function redirect($path, $permanent = false)
 
 function asset($param)
 {
-    return base_url . '/public/' . $param;
+    return base_url . 'public/' . $param;
 }
 
 function url($param)
