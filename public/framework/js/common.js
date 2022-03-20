@@ -5,17 +5,27 @@ var errorStatus = [500, 422];
 
 async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
     const submitBtnText = $('#submitBtn').html();
-    loadingBtn('submitBtn', true, submitBtnText);
+
+    var btnSubmitIDs = $('#' + formID + ' button[type=submit]').attr("id");
+    var inputSubmitIDs = $('#' + formID + ' input[type=submit]').attr("id");
+    var submitIdBtn = isDef(btnSubmitIDs) ? btnSubmitIDs : isDef(inputSubmitIDs) ? inputSubmitIDs : null;
+
+    // console.log('button submit id', submitIdBtn);
+    loadingBtn(submitIdBtn, true, submitBtnText);
 
     if (dataObj != null) {
         url = $('meta[name="base_url"]').attr('content') + url;
 
         const dataArr = new URLSearchParams();
+
         $.each(dataObj, function (i, field) {
+            required = $('input[name="' + field.name + '"]').attr('required');
+            // if (isDef(required)) {
+            //     console.log('field ' + field.name + ' is ' + required);
+            // }
+
             dataArr.append(field.name, field.value);
         });
-
-        // dataArr.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
         try {
             return axios({
@@ -23,31 +33,33 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                     headers: {
                         "Authorization": `Bearer ${$('meta[name="csrf-token"]').attr('content')}`,
                         'X-Requested-With': 'XMLHttpRequest',
-                        'content-type': 'application/x-www-form-urlencoded'
+                        'content-type': 'application/x-www-form-urlencoded',
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
                     },
                     url: url,
                     data: dataArr
                 })
                 .then(result => {
-                    loadingBtn('submitBtn', false, submitBtnText);
 
                     if (isSuccess(result.status) && reloadFunction != null) {
                         reloadFunction();
                     }
 
                     if (formID != null) {
-                        var modalID = $('#' + formID).attr('data-modal');
-                        setTimeout(function () {
+                        // var modalID = $('#' + formID).attr('data-modal');
+                        var modalID = $(".modal").filter(".show").attr('id');
 
+                        setTimeout(function () {
                             if (modalID == '#generaloffcanvas-right') {
                                 $(modalID).offcanvas('toggle');
                             } else {
-                                $(modalID).modal('hide');
+                                $('#' + modalID).modal('hide');
                             }
 
-                        }, 200);
+                        }, 300);
                     }
 
+                    loadingBtn(submitIdBtn, false, submitBtnText);
                     noti(result.status);
                     return result;
                 })
@@ -58,12 +70,12 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                         noti(error.response.status, "Unauthorized: Access is denied");
                         // console.log(error.response.status);
                     }
-                    loadingBtn('submitBtn', false);
+                    loadingBtn(submitIdBtn, false);
                     throw error;
                 });
         } catch (e) {
             const res = e.response;
-            loadingBtn('submitBtn', false);
+            loadingBtn(submitIdBtn, false);
 
             if (isUnauthorized(res.status)) {
                 noti(res.status, "Unauthorized: Access is denied");
@@ -97,7 +109,8 @@ async function deleteApi(id, url, reloadFunction = null) {
                     headers: {
                         "Authorization": `Bearer ${$('meta[name="csrf-token"]').attr('content')}`,
                         'X-Requested-With': 'XMLHttpRequest',
-                        'content-type': 'application/x-www-form-urlencoded'
+                        'content-type': 'application/x-www-form-urlencoded',
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
                     },
                     url: url,
                     data: new URLSearchParams({
@@ -146,18 +159,23 @@ async function deleteApi(id, url, reloadFunction = null) {
 
 async function callApi(method = 'POST', url, dataObj = null) {
     url = $('meta[name="base_url"]').attr('content') + url;
-    if (isObject(dataObj) || isArray(dataObj)) {
-        dataArr = {}; // {} will create an object
-        for (var key in dataObj) {
-            if (dataObj.hasOwnProperty(key)) {
-                dataArr[key] = dataObj[key];
+
+    if (dataObj != null) {
+        if (isObject(dataObj) || isArray(dataObj)) {
+            dataArr = {}; // {} will create an object
+            for (var key in dataObj) {
+                if (dataObj.hasOwnProperty(key)) {
+                    dataArr[key] = dataObj[key];
+                }
             }
+            dataSent = new URLSearchParams(dataArr);
+        } else {
+            dataSent = new URLSearchParams({
+                id: dataObj
+            });
         }
-        dataSent = new URLSearchParams(dataArr);
     } else {
-        dataSent = new URLSearchParams({
-            id: dataObj
-        });
+        dataSent = null;
     }
 
     try {
@@ -166,7 +184,8 @@ async function callApi(method = 'POST', url, dataObj = null) {
                 headers: {
                     "Authorization": `Bearer ${$('meta[name="csrf-token"]').attr('content')}`,
                     'X-Requested-With': 'XMLHttpRequest',
-                    'content-type': 'application/x-www-form-urlencoded'
+                    'content-type': 'application/x-www-form-urlencoded',
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
                 },
                 url: url,
                 data: dataSent
@@ -205,36 +224,21 @@ async function callApi(method = 'POST', url, dataObj = null) {
 }
 
 function noti(code = 200, text = 'Save', typeToast = 'toast') {
-    // toastr.options = {
-    //     preventDuplicates: true,
-    //     timeOut: 4000,
-    //     progressBar: true,
-    //     positionClass: "toast-top-right"
-    // }
-
-    // if (isSuccess(code)) {
-    //     toastr.success(ucfirst(text) + ' successfully');
-    // } else {
-    //     toastr.error(text == 'save' ? "Ops! Something went wrong!" : text);
-    //     console.log(text);
-    // }
-
-    if(typeToast == 'toast'){
+    if (typeToast == 'toast') {
         cuteToast({
-            type : (isSuccess(code)) ? 'success' : 'error',
-            title : (isSuccess(code)) ? 'Great!' : 'Ops!',
-            message : (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
-            timer : 5000,
+            type: (isSuccess(code)) ? 'success' : 'error',
+            title: (isSuccess(code)) ? 'Great!' : 'Ops!',
+            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            timer: 5000,
         });
-    }else{
+    } else {
         cuteAlert({
-            type : (isSuccess(code)) ? 'success' : 'error',
-            title : (isSuccess(code)) ? 'Great!' : 'Ops!',
-            message : (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
-            closeStyle : 'circle',
+            type: (isSuccess(code)) ? 'success' : 'error',
+            title: (isSuccess(code)) ? 'Great!' : 'Ops!',
+            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            closeStyle: 'circle',
         });
     }
-    
 }
 
 function log(inp) {

@@ -33,6 +33,8 @@ class Controller
                 checkMaintenance();
             }
         }
+
+        $this->db = db();
     }
 
     // Initializes a new instance of the static class

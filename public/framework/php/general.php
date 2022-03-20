@@ -4,7 +4,6 @@ if (isset($_POST['fileName'])) {
     $filename = $_POST['fileName'];
     $data = $_POST['dataArray'];
     $filePath = "../../../app/views/$filename";
-
     if (file_exists($filePath)) {
         $opts = array(
             'http' =>
@@ -47,6 +46,10 @@ if (isset($_POST['fileName'])) {
                 dataArray: dataArray,
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
+            headers: {
+                "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
+            },
             dataType: "html",
             success: function(data) {
                 $('#' + idContent).append(data);
@@ -88,6 +91,10 @@ if (isset($_POST['fileName'])) {
                 fileName: fileName,
                 dataArray: dataArray,
                 _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            headers: {
+                "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
             },
             dataType: "html",
             success: function(response) {
@@ -141,13 +148,35 @@ if (isset($_POST['fileName'])) {
         var table = tableID.DataTable().clear().destroy();
 
         if (typeTable == 'client') {
+
             return tableID.DataTable({
                 // "pagingType": "full_numbers",
                 'paging': true,
                 'ordering': true,
-                'info': false,
-                'lengthChange': false,
+                'info': true,
+                'lengthChange': true,
                 'responsive': false,
+                'language': {
+                    "searchPlaceholder": 'Search...',
+                    "sSearch": '',
+                    "lengthMenu": '_MENU_ item / page',
+                    "paginate": {
+                        "first": "First",
+                        "last": "The End",
+                        "previous": "Previous",
+                        "next": "Next"
+                    },
+                    "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                    "emptyTable": "No data is available in the table",
+                    "info": "Showing _START_ to  _END_ of  _TOTAL_ items",
+                    "infoEmpty": "Showing 0 to 0 of 0 items",
+                    "infoFiltered": "(filtered from _MAX_ number of items)",
+                    "zeroRecords": "No matching records",
+                    "processing": "<span class='text-danger font-weight-bold font-italic'> Processing ... Please wait a moment..",
+                    "loadingRecords": "Loading...",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                },
             });
 
         } else {
@@ -167,6 +196,31 @@ if (isset($_POST['fileName'])) {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
+                    headers: {
+                        "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
+                    },
+                },
+                "language": {
+                    "searchPlaceholder": 'Search...',
+                    "sSearch": '',
+                    "lengthMenu": '_MENU_ item / page',
+                    "paginate": {
+                        "first": "First",
+                        "last": "The End",
+                        "previous": "Previous",
+                        "next": "Next"
+                    },
+                    "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                    "emptyTable": "No data is available in the table",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                    "infoEmpty": "Showing 0 to 0 of 0 items",
+                    "infoFiltered": "(filtered from _MAX_ number of items)",
+                    "zeroRecords": "No matching records",
+                    "processing": "<span class='text-danger font-weight-bold font-italic'> Processing ... Please wait a moment.. ",
+                    "loadingRecords": "Loading...",
+                    "infoPostFix": "",
+                    "thousands": ",",
                 },
                 initComplete: function() {
 

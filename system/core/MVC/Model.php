@@ -27,7 +27,7 @@ class Model
         $className = get_called_class();
         $obj = new $className;
 
-        $columnName = (!empty($columnName)) ? $columnName : $obj->primaryKey;
+        $columnName = (!empty($columnName)) ? escape($columnName) : $obj->primaryKey;
 
         $data = db()->where($columnName, $id)->fetchRow($obj->table);
         return (!empty($data)) ? $data : NULL;
@@ -54,12 +54,12 @@ class Model
     }
 
     // where($coloumName, $value) takes the condition and returns all data related in model
-    public static function where($coloumName = NULL, $value = NULL)
+    public static function where($coloumName = NULL, $value = NULL, $con = NULL)
     {
         $value = escape($value);
         $className = get_called_class();
         $obj = new $className;
-        return db()->where($coloumName, $value)->get($obj->table);
+        return (empty($con)) ? db()->where($coloumName, $value)->get($obj->table) : db()->where($coloumName, $value, $con)->get($obj->table);
     }
 
     // first() returns the first record found in the database. If no matching model exist, it returns null
