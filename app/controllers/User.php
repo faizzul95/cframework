@@ -82,7 +82,7 @@ class User extends Controller
 
     public function delete()
     {
-        $data = users::delete(escape($_POST['id'])); // call static function
+        $data = users::delete($_POST['id']); // call static function
         json($data);
     }
 }

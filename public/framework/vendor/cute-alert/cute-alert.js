@@ -24,15 +24,17 @@ const cuteAlert = ({
     const scripts = document.getElementsByTagName('script');
 
     let src = '<?php echo base_url ?>';
-    
-    if(type == 'success'){
+
+    if (type == 'success') {
       img = '/img/success.svg';
-    }else if (type == 'info'){
+    } else if (type == 'info') {
       img = '/img/info.svg';
-    }else if (type == 'error'){
+    } else if (type == 'error') {
       img = '/img/error.svg';
-    }else if (type == 'question'){
+    } else if (type == 'question') {
       img = '/img/question.svg';
+    } else {
+      img = '/img/warning.svg';
     }
 
     for (let script of scripts) {
@@ -93,15 +95,16 @@ const cuteAlert = ({
       const confirmButton = document.querySelector('.confirm-button');
       const cancelButton = document.querySelector('.cancel-button');
 
+      cancelButton.addEventListener('click', () => {
+        alertWrapper.remove();
+        resolve('abort');
+      });
+
       confirmButton.addEventListener('click', () => {
         alertWrapper.remove();
         resolve('confirm');
       });
 
-      cancelButton.addEventListener('click', () => {
-        alertWrapper.remove();
-        resolve();
-      });
     } else {
       const alertButton = document.querySelector('.alert-button');
 
@@ -116,10 +119,10 @@ const cuteAlert = ({
       resolve('close');
     });
 
-/*     alertWrapper.addEventListener('click', () => {
-      alertWrapper.remove();
-      resolve();
-    }); */
+    /*     alertWrapper.addEventListener('click', () => {
+          alertWrapper.remove();
+          resolve();
+        }); */
 
     alertFrame.addEventListener('click', e => {
       e.stopPropagation();
@@ -127,29 +130,32 @@ const cuteAlert = ({
   });
 };
 
-const cuteToast = ({  
+const cuteToast = ({
   type = 'success',
   title = null,
   message = null,
   timer = 5000,
   img = '/img/success.svg',
   vibrate = [],
-  playSound = null, }) => {
+  playSound = null,
+}) => {
   return new Promise(resolve => {
     const body = document.querySelector('body');
 
     const scripts = document.getElementsByTagName('script');
 
     let src = '<?php echo base_url ?>';
-    
-    if(type == 'success'){
+
+    if (type == 'success') {
       img = '/img/success.svg';
-    }else if (type == 'info'){
+    } else if (type == 'info') {
       img = '/img/info.svg';
-    }else if (type == 'error'){
+    } else if (type == 'error') {
       img = '/img/error.svg';
-    }else if (type == 'question'){
+    } else if (type == 'question') {
       img = '/img/question.svg';
+    } else {
+      img = '/img/warning.svg';
     }
 
     for (let script of scripts) {

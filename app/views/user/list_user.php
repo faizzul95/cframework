@@ -66,7 +66,8 @@
         // 2nd param = url to function in controller
         const res = await callApi('post', "user/getAll");
 
-        if (res.status == 200) {
+        // check if request is success
+        if (isSuccess(res)) {
 
             if (res.data != null) {
                 $('#nodatadiv').hide(); // id #nodatadiv is default value in generateDatatable
@@ -97,7 +98,7 @@
             }
 
         } else {
-            noti(400);
+            noti(res.status); // show error message
         }
     }
 
@@ -109,15 +110,20 @@
         // 3rd id, or any unique key 
         const res = await callApi('post', "user/getUsersByID", id);
 
-        const modalTitle = 'User Detail';
-        const fileToLoad = 'user/_view.php';
-        const modalBodyID = 'generalContent'; // set null if using offcanvas
-        const modalSize = 'lg'; // sm / md/ lg / xl / xs (according to template bootstrap version) - set null if use offcanvas
-        const modalType = 'modal'; // modal or offcanvas (bootstrap 5 only)
-        loadFileContent(fileToLoad, modalBodyID, modalSize, modalTitle, res.data, modalType);
+        // check if request is success
+        if (isSuccess(res)) {
+            const modalTitle = 'User Detail';
+            const fileToLoad = 'user/_view.php';
+            const modalBodyID = 'generalContent'; // set null if using offcanvas
+            const modalSize = 'lg'; // sm / md/ lg / xl / xs (according to template bootstrap version) - set null if use offcanvas
+            const modalType = 'modal'; // modal or offcanvas (bootstrap 5 only)
+            loadFileContent(fileToLoad, modalBodyID, modalSize, modalTitle, res.data, modalType);
 
-        // or use inline like this without variable declaration (recommend)
-        // loadFileContent('user/_view.php', 'generalContent', 'lg', 'User Detail', res.data);
+            // OR use inline like this without variable declaration (recommend)
+            // loadFileContent('user/_view.php', 'generalContent', 'lg', 'User Detail', res.data);
+        } else {
+            noti(res.status); // show error message
+        }
     }
 
     async function updateRecord(id) {
@@ -127,9 +133,14 @@
         // 3rd id, or any unique key 
         const res = await callApi('post', "user/getUsersByID", id);
 
-        // 1st param = type form (create or update)
-        // 2nd param = data to update (result form axios call)
-        formModal('update', res.data);
+        // check if request is success
+        if (isSuccess(res)) {
+            // 1st param = type form (create or update)
+            // 2nd param = data to update (result form axios call)
+            formModal('update', res.data);
+        } else {
+            noti(res.status); // show error message
+        }
     }
 
     async function deleteRecord(id) {

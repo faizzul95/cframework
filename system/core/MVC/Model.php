@@ -98,6 +98,21 @@ class Model
             $dataArr[$obj->primaryKey] = $id; // add id PK
 
             $data = $dataArr;
+
+            // validate data
+            if (isset($obj->rules) && !empty($obj->rules)) {
+                $validation = validator()->make($data, $obj->rules);
+                if (isset($obj->messages) && !empty($obj->messages)) {
+                    $validation->setAliases($obj->messages);
+                }
+                $validation->validate(); // validate input
+
+                if ($validation->fails()) {
+                    $errors = $validation->errors();
+                    http_response_code(422);
+                    return $errors->all(':message');
+                }
+            }
         }
 
         return save($obj->table, $data);
@@ -115,7 +130,26 @@ class Model
                     $dataInsert[$columnName] = escape($data[$columnName]);
                 }
             }
-            return insert($obj->table, $dataInsert, true);
+
+            // validate data
+            if (isset($obj->rules) && !empty($obj->rules)) {
+                $validation = validator()->make($dataInsert, $obj->rules);
+                if (isset($obj->messages) && !empty($obj->messages)) {
+                    $validation->setAliases($obj->messages);
+                }
+                $validation->validate(); // validate input
+
+                if ($validation->fails()) {
+                    $errors = $validation->errors();
+                    http_response_code(422);
+                    return $errors->all(':message');
+                } else {
+                    return insert($obj->table, $dataInsert, true);
+                }
+            } else {
+                return insert($obj->table, $dataInsert, true);
+            }
+
             exit();
         }
 
@@ -140,6 +174,21 @@ class Model
             $dataArr[$obj->primaryKey] = $id; // add id PK
 
             $data = $dataArr;
+
+            // validate data
+            if (isset($obj->rules) && !empty($obj->rules)) {
+                $validation = validator()->make($data, $obj->rules);
+                if (isset($obj->messages) && !empty($obj->messages)) {
+                    $validation->setAliases($obj->messages);
+                }
+                $validation->validate(); // validate input
+
+                if ($validation->fails()) {
+                    $errors = $validation->errors();
+                    http_response_code(422);
+                    return $errors->all(':message');
+                }
+            }
         }
 
         return updateOrInsert($obj->table, $data);
@@ -159,7 +208,28 @@ class Model
                 }
             }
             $dataUpdate[$obj->primaryKey] = $id; // add id PK
-            return update($obj->table, $dataUpdate, $id);
+
+            // validate data
+            if (isset($obj->rules) && !empty($obj->rules)) {
+                $validation = validator()->make($dataUpdate, $obj->rules);
+
+                if (isset($obj->messages) && !empty($obj->messages)) {
+                    $validation->setAliases($obj->messages);
+                }
+
+                $validation->validate(); // validate input
+
+                if ($validation->fails()) {
+                    $errors = $validation->errors();
+                    http_response_code(422);
+                    return $errors->all(':message');
+                } else {
+                    return update($obj->table, $dataUpdate, $id);
+                }
+            } else {
+                return update($obj->table, $dataUpdate, $id);
+            }
+
             exit();
         }
 
@@ -203,5 +273,33 @@ class Model
         $className = get_called_class();
         $obj = new $className;
         return countValue($obj->table, $columnToCount, $dataToCount);
+    }
+
+    public static function validate($data)
+    {
+        $className = get_called_class();
+        $obj = new $className;
+
+        if (isset($obj->rules) && !empty($obj->rules)) {
+            $validation = validator()->make($data, $obj->rules);
+            if (isset($obj->messages) && !empty($obj->messages)) {
+                $validation->setAliases($obj->messages);
+            }
+            $validation->validate(); // validate input
+
+            if ($validation->fails()) {
+                $errors = $validation->errors();
+                return json($errors->all(':message'));
+                // $errors = $validation->errors();
+                // echo "<pre>";
+                // print_r($errors->firstOfAll());
+                // echo "</pre>";
+                // exit;
+            } else {
+                return true;
+            }
+        }
+
+        return true;
     }
 }

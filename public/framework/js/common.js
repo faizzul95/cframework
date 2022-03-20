@@ -10,7 +10,6 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
     var inputSubmitIDs = $('#' + formID + ' input[type=submit]').attr("id");
     var submitIdBtn = isDef(btnSubmitIDs) ? btnSubmitIDs : isDef(inputSubmitIDs) ? inputSubmitIDs : null;
 
-    // console.log('button submit id', submitIdBtn);
     loadingBtn(submitIdBtn, true, submitBtnText);
 
     if (dataObj != null) {
@@ -64,11 +63,14 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                     return result;
                 })
                 .catch(error => {
-                    if (isError(error.response.status)) {
-                        noti(error.response.status);
-                    } else if (isUnauthorized(error.response.status)) {
-                        noti(error.response.status, "Unauthorized: Access is denied");
-                        // console.log(error.response.status);
+                    const res = error.response;
+                    if (isError(res.status)) {
+                        for (var error in res.data) {
+                            noti(res.status, res.data[error]);
+                            // console.log('test error', res.data[error]);
+                        }
+                    } else if (isUnauthorized(res.status)) {
+                        noti(res.status, "Unauthorized: Access is denied");
                     }
                     loadingBtn(submitIdBtn, false);
                     throw error;
@@ -197,13 +199,11 @@ async function callApi(method = 'POST', url, dataObj = null) {
                     noti(error.response.status);
                 } else if (isUnauthorized(error.response.status)) {
                     noti(error.response.status, "Unauthorized: Access is denied");
-                    // console.log(error.response.status);
                 }
                 throw error;
             });
     } catch (e) {
         const res = e.response;
-        // console.log(res);
         if (isUnauthorized(res.status)) {
             noti(res.status, "Unauthorized: Access is denied");
         } else {
@@ -228,14 +228,14 @@ function noti(code = 200, text = 'Save', typeToast = 'toast') {
         cuteToast({
             type: (isSuccess(code)) ? 'success' : 'error',
             title: (isSuccess(code)) ? 'Great!' : 'Ops!',
-            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : (isError(code)) ? text : 'Something went wrong',
             timer: 5000,
         });
     } else {
         cuteAlert({
             type: (isSuccess(code)) ? 'success' : 'error',
             title: (isSuccess(code)) ? 'Great!' : 'Ops!',
-            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : 'Something went wrong',
+            message: (isSuccess(code)) ? ucfirst(text) + ' successfully' : (isError(code)) ? text : 'Something went wrong',
             closeStyle: 'circle',
         });
     }

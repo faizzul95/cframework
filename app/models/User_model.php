@@ -13,7 +13,7 @@ class User_model extends Model
      * @var array
      */
     protected $fillable = [
-        'user_code', // remove this if want to test
+        'user_code', // <--- if this not in fillable it will not save in db, remove this if want to test
         'user_full_name',
         'user_preferred_name',
         'user_gender',
@@ -24,7 +24,34 @@ class User_model extends Model
         'user_status',
     ];
 
-    // user_code <--- if this not in fillable it will not save in db
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    protected $rules = [
+        'user_id' => 'numeric',
+        'user_code' => 'required|min:1|max:3',
+        'user_full_name' => 'required|min:20|max:30',
+    ];
+
+    /**
+     * Custom message for validation
+     *
+     * @return array
+     */
+    protected $messages = [
+        'user_code' => 'Code',
+        'user_full_name' => 'Full Name'
+    ];
+
+
+
+    ###################################################################
+    #                                                                 #
+    #               Start custom function below                       #
+    #                                                                 #
+    ###################################################################
 
     public function getlist()
     {
