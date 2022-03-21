@@ -45,8 +45,6 @@ class User_model extends Model
         'user_full_name' => 'Full Name'
     ];
 
-
-
     ###################################################################
     #                                                                 #
     #               Start custom function below                       #
@@ -83,7 +81,6 @@ class User_model extends Model
                 return 'Female';
             }
         });
-
 
         $this->serversideDt->edit('user_id', function ($data) {
             $del = $edit =  '';

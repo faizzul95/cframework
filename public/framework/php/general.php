@@ -142,7 +142,7 @@ if (isset($_POST['fileName'])) {
         });
     }
 
-    function generateDatatable(id, typeTable = 'client', url = null, nodatadiv = 'nodatadiv') {
+    function generateDatatable(id, typeTable = 'client', url = null, nodatadiv = 'nodatadiv', dataObj = null) {
 
         const tableID = $('#' + id);
         var table = tableID.DataTable().clear().destroy();
@@ -181,6 +181,25 @@ if (isset($_POST['fileName'])) {
 
         } else {
 
+            if (dataObj != null) {
+                if (isObject(dataObj) || isArray(dataObj)) {
+                    dataArr = {}; // {} will create an object
+                    for (var key in dataObj) {
+                        if (dataObj.hasOwnProperty(key)) {
+                            dataArr[key] = dataObj[key];
+                        }
+                    }
+                    dataSent = dataArr;
+                    // dataSent = new URLSearchParams(dataArr);
+                } else {
+                    dataSent = new URLSearchParams({
+                        id: dataObj
+                    });
+                }
+            } else {
+                dataSent = null;
+            }
+
             return tableID.DataTable({
                 // "pagingType": "full_numbers",
                 "processing": true,
@@ -193,11 +212,11 @@ if (isset($_POST['fileName'])) {
                     type: 'POST',
                     url: $('meta[name="base_url"]').attr('content') + url,
                     dataType: "JSON",
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
+                    data: dataSent,
                     headers: {
                         "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'content-type': 'application/x-www-form-urlencoded',
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
                     },
                 },
