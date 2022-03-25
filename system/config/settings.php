@@ -36,7 +36,7 @@ $config = [
     |--------------------------------------------------------------------------
     */
 
-    'maintenance' => (bool) (isset($_ENV['MAINTENANCE_MODE'])) ? $_ENV['MAINTENANCE_MODE'] : false,
+    'maintenance' => (isset($_ENV['MAINTENANCE_MODE'])) ? filter_var($_ENV['MAINTENANCE_MODE'], FILTER_VALIDATE_BOOLEAN) : false,
 
     /*
     |--------------------------------------------------------------------------
@@ -75,14 +75,11 @@ $config = [
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Security : CSRF
     |--------------------------------------------------------------------------
-    |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
-    |
     */
+
+    'csrf' => (isset($_ENV['CSRF'])) ? filter_var($_ENV['CSRF'], FILTER_VALIDATE_BOOLEAN) : false,
 
 ];
 
@@ -104,7 +101,6 @@ date_default_timezone_set(TIMEZONE);
 
 // set error reporting
 error_reporting(($config['env'] == 'development') ? E_ALL : '0');
-
 
 // set default templating blade mode
 define('BLADE_MODE', $config['blade']);
