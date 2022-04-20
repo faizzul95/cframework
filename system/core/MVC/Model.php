@@ -4,6 +4,7 @@ class Model
 {
     public function __construct()
     {
+        $currentClass = get_called_class();
         $this->db = db();
         $this->serversideDt = serverSideDT($this->db);
         $this->getInstanceDB = $this->db->getInstance();
@@ -86,7 +87,7 @@ class Model
         $obj = new $className;
 
         if (isset($obj->fillable)) {
-            $id = escape($data[$obj->primaryKey]);
+            $id = (isset($data[$obj->primaryKey])) ? escape($data[$obj->primaryKey]) : NULL;
             $dataArr = array(); // reset array
 
             foreach ($obj->fillable as $columnName) {
@@ -162,7 +163,7 @@ class Model
         $obj = new $className;
 
         if (isset($obj->fillable)) {
-            $id = escape($data[$obj->primaryKey]);
+            $id = (isset($data[$obj->primaryKey])) ? escape($data[$obj->primaryKey]) : NULL;
             $dataArr = array(); // reset array
 
             foreach ($obj->fillable as $columnName) {
@@ -240,7 +241,7 @@ class Model
     {
         $className = get_called_class();
         $obj = new $className;
-        return insertMulti($obj->table, $data, true);
+        return insertMulti($obj->table, $data);
     }
 
     public static function delete($id = NULL, $pkTable = NULL)

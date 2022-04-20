@@ -71,7 +71,7 @@ function session()
 
     if (filter_var($_ENV['AUTH_SESSION_CHECK'], FILTER_VALIDATE_BOOLEAN) === TRUE) {
         if (!$session->has('isLoggedIn')) {
-            redirect('auth/logout');
+            redirect('auth/logout', true);
         }
     } else {
         // $this->session = new \Configuration\SessionManager();
@@ -151,9 +151,11 @@ function removeCache($folder = NULL, $removeFile = false)
     }
 }
 
-function folder($foldername = 'default', $id = 0, $type = 1)
+function folder($foldername = 'default', $id = 0, $type = 'image')
 {
-    $folder = 'assets/' . $folderType . '/' . $id;
+    $foldername = str_replace(array('\'', '/', '"', ',', ';', '<', '>', '@', '|'), '_', preg_replace('/\s+/', '_', $foldername));
+
+    $folder = 'upload/' . $type . '/' . $foldername;
 
     // check if folder current email id not exist, 
     // create one with permission (server) to upload
@@ -297,12 +299,3 @@ function getClassNameFromFile($filePathName)
 
     return $classes[0];
 }
-
-function replaceTextWithData($string = null, $arrayOfStringToReplace = array(), $prefix = '%', $suffix = '%'){
-    return str_replace(array_keys($prefix.$arrayOfStringToReplace.$suffix), array_values($arrayOfStringToReplace), $string);
-    
-    // foreach($arrayOfStringToReplace as $index => $value){
-    //     $string = str_replace($prefix.$index.$suffix, $value, $string);
-    // }
-}
-

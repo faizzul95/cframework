@@ -84,8 +84,9 @@ function trail($status, $event, $table, $set = NULL, $previous_values = NULL)
     insert(
         $auditTable,
         [
-            'user_id' => session()->get('userID') ?? 0,
-            'user_fname' => session()->get('fullname') ?? 'guest',
+            'user_id' => (!empty($_SESSION['isLoggedIn'])) ? session()->get('userID') : 0,
+            'role_id' => (!empty($_SESSION['isLoggedIn'])) ? session()->get('roleID') : 0,
+            'user_fullname' => (!empty($_SESSION['isLoggedIn'])) ? session()->get('userFullname') : 'guest',
             'event' => $event,
             'table_name' => $table,
             'old_values' => $old_value,

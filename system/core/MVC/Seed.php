@@ -73,6 +73,9 @@ class Seed
         echo '<script src="' . base_url . 'public/framework/js/common.js"></script>';
         echo '<script src="' . base_url . 'public/framework/js/axios.min.js"></script>';
 
+        echo '<script src="' . base_url . 'public/framework/vendor/cute-alert/cute-alert.js"></script>';
+        echo '<link rel="stylesheet" href="' . base_url . 'public/framework/vendor/cute-alert/style.css">';
+
         $url = 'seed/all';
         $urlMigrate = url('migrate');
 

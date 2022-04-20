@@ -1440,10 +1440,10 @@ class Database
      */
     public function escape_data($str)
     {
-        // return $this->mysqli()->real_escape_string($str);
+        return $this->mysqli()->real_escape_string($str);
         // $str = purify($str); // Protection against Cross-site scripting (XSS) 
-        $str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8', true);
-        return $this->mysqli()->real_escape_string(trim($str));
+        // $str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8', true);
+        // return $this->mysqli()->real_escape_string(trim($str));
     }
 
     /**

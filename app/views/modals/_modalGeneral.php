@@ -69,6 +69,24 @@
     </div>
 </div>
 
+<!-- Full screen modal -->
+<div class="modal animate__animated animate__slideInRight" id="generalModal-fullscreen" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="generalTitle-fullscreen"> General Modal </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="generalContent-fullscreen">
+                Please add content
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Off-canvas General -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="generaloffcanvas-right">
     <div class="offcanvas-header">

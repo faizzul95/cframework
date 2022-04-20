@@ -77,7 +77,6 @@ class App
       call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-
     // if (isAjax()) {
     //   call_user_func_array([$this->controller, $this->method], $this->params);
     //   exit();

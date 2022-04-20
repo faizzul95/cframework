@@ -200,62 +200,123 @@ if (isset($_POST['fileName'])) {
                 dataSent = null;
             }
 
-            return tableID.DataTable({
-                // "pagingType": "full_numbers",
-                "processing": true,
-                "serverSide": true,
-                "responsive": true,
-                "iDisplayLength": 10,
-                "bLengthChange": true,
-                "searching": true,
-                "ajax": {
-                    type: 'POST',
-                    url: $('meta[name="base_url"]').attr('content') + url,
-                    dataType: "JSON",
-                    data: dataSent,
-                    headers: {
-                        "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'content-type': 'application/x-www-form-urlencoded',
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
-                    },
-                },
-                "language": {
-                    "searchPlaceholder": 'Search...',
-                    "sSearch": '',
-                    "lengthMenu": '_MENU_ item / page',
-                    "paginate": {
-                        "first": "First",
-                        "last": "The End",
-                        "previous": "Previous",
-                        "next": "Next"
-                    },
-                    "info": "Showing _START_ to _END_ of _TOTAL_ items",
-                    "emptyTable": "No data is available in the table",
-                    "info": "Showing _START_ to _END_ of _TOTAL_ items",
-                    "infoEmpty": "Showing 0 to 0 of 0 items",
-                    "infoFiltered": "(filtered from _MAX_ number of items)",
-                    "zeroRecords": "No matching records",
-                    "processing": "<span class='text-danger font-weight-bold font-italic'> Processing ... Please wait a moment.. ",
-                    "loadingRecords": "Loading...",
-                    "infoPostFix": "",
-                    "thousands": ",",
-                },
-                initComplete: function() {
+            console.log(dataSent);
 
-                    var totalData = this.api().data().length;
+            if (dataSent == null) {
+                return tableID.DataTable({
+                    // "pagingType": "full_numbers",
+                    "processing": true,
+                    "serverSide": true,
+                    "responsive": true,
+                    "iDisplayLength": 10,
+                    "bLengthChange": true,
+                    "searching": true,
+                    "ajax": {
+                        type: 'POST',
+                        url: $('meta[name="base_url"]').attr('content') + url,
+                        dataType: "JSON",
+                        // data: dataSent,
+                        headers: {
+                            "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'content-type': 'application/x-www-form-urlencoded',
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
+                        },
+                    },
+                    "language": {
+                        "searchPlaceholder": 'Search...',
+                        "sSearch": '',
+                        "lengthMenu": '_MENU_ item / page',
+                        "paginate": {
+                            "first": "First",
+                            "last": "The End",
+                            "previous": "Previous",
+                            "next": "Next"
+                        },
+                        "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                        "emptyTable": "No data is available in the table",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                        "infoEmpty": "Showing 0 to 0 of 0 items",
+                        "infoFiltered": "(filtered from _MAX_ number of items)",
+                        "zeroRecords": "No matching records",
+                        "processing": "<span class='text-danger font-weight-bold font-italic'> Processing ... Please wait a moment.. ",
+                        "loadingRecords": "Loading...",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                    },
+                    initComplete: function() {
 
-                    if (totalData > 0) {
-                        $('#' + nodatadiv).hide();
-                        $('#' + id + 'Div').show();
-                    } else {
-                        tableID.DataTable().clear().destroy();
-                        $('#' + id + 'Div').hide();
-                        $('#' + nodatadiv).show();
+                        var totalData = this.api().data().length;
+
+                        if (totalData > 0) {
+                            $('#' + nodatadiv).hide();
+                            $('#' + id + 'Div').show();
+                        } else {
+                            tableID.DataTable().clear().destroy();
+                            $('#' + id + 'Div').hide();
+                            $('#' + nodatadiv).show();
+                        }
+
                     }
+                });
+            } else {
+                return tableID.DataTable({
+                    // "pagingType": "full_numbers",
+                    "processing": true,
+                    "serverSide": true,
+                    "responsive": true,
+                    "iDisplayLength": 10,
+                    "bLengthChange": true,
+                    "searching": true,
+                    "ajax": {
+                        type: 'POST',
+                        url: $('meta[name="base_url"]').attr('content') + url,
+                        dataType: "JSON",
+                        data: dataSent,
+                        headers: {
+                            "Authorization": "Bearer " + $('meta[name="csrf-token"]').attr('content'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'content-type': 'application/x-www-form-urlencoded',
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content'),
+                        },
+                    },
+                    "language": {
+                        "searchPlaceholder": 'Search...',
+                        "sSearch": '',
+                        "lengthMenu": '_MENU_ item / page',
+                        "paginate": {
+                            "first": "First",
+                            "last": "The End",
+                            "previous": "Previous",
+                            "next": "Next"
+                        },
+                        "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                        "emptyTable": "No data is available in the table",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ items",
+                        "infoEmpty": "Showing 0 to 0 of 0 items",
+                        "infoFiltered": "(filtered from _MAX_ number of items)",
+                        "zeroRecords": "No matching records",
+                        "processing": "<span class='text-danger font-weight-bold font-italic'> Processing ... Please wait a moment.. ",
+                        "loadingRecords": "Loading...",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                    },
+                    initComplete: function() {
 
-                }
-            });
+                        var totalData = this.api().data().length;
+
+                        if (totalData > 0) {
+                            $('#' + nodatadiv).hide();
+                            $('#' + id + 'Div').show();
+                        } else {
+                            tableID.DataTable().clear().destroy();
+                            $('#' + id + 'Div').hide();
+                            $('#' + nodatadiv).show();
+                        }
+
+                    }
+                });
+            }
 
         }
     }

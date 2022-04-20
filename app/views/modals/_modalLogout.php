@@ -6,10 +6,10 @@
                 <h4 class="modal-title">Are you sure ?</h4>
             </div>
             <div class="modal-body">
-                <h6>Select "Log Out" below if you are ready to end your session now</h6>
+                <h6>Click "Log Out" below if you are ready to end your session now</h6>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                 <a href="{{ url('auth/logout') }}" type="button" class="btn btn-danger pull-right">Log Out</a>
             </div>
         </div>

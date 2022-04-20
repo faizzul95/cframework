@@ -176,13 +176,23 @@ function countValue($table, $columnToCount, $dataToCount)
     return $db->getValue($table, "count(*)");
 }
 
-function insertMulti($table, $data, $ids = NULL)
+function insertMulti($table, $data)
 {
-    if ($ids) {
-        return (db()->insertMulti($table, $data)) ?? 400;
-    } else {
-        return (db()->insertMulti($table, $data)) ? 200 : 400;
-    }
+    $ids = db()->insertMulti($table, $data);
+    $resCode = ($ids) ? 200 : 400;
+
+    return [
+        "resCode" => $resCode,
+        "message" =>  message($resCode, 'insert'),
+        "id" => $ids,
+        "data" => $data
+    ];
+
+    // if ($ids) {
+    //     return (db()->insertMulti($table, $data)) ?? 400;
+    // } else {
+    //     return (db()->insertMulti($table, $data)) ? 200 : 400;
+    // }
 }
 
 function table_list()

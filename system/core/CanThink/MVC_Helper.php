@@ -191,6 +191,23 @@ function nodataJs($filesName = '3.png')
         </div>";
 }
 
+function noSelectDataLeft($type = 'Type', $filesName = '5.png')
+{
+    $uppercaseText = strtoupper($type);
+    echo "
+        <div id='nodata' class='col-lg-12 mb-2 mt-4' style='margin-top:50px!important;'>
+          <center>
+            <img src='" . url('public/framework/img/nodata/' . $filesName) . "' class='img-fluid mb-5' width='50%'>
+            <h3 style='letter-spacing :2px; font-family: Quicksand, sans-serif !important;margin-bottom:15px'> 
+             <strong> NO $uppercaseText SELECTED </strong>
+            </h3>
+            <h6 style='letter-spacing :2px; font-family: Quicksand, sans-serif !important;font-size: 13px;'> 
+                Select any $type on the left
+            </h6>
+          </center>
+        </div>";
+}
+
 function noAnnouncementJs($filesName = 'search-folder.png')
 {
     return "<div id='nodata' class='col-lg-12 mb-2 mt-5'>
@@ -242,6 +259,19 @@ function noSearchFoundJs($filesName = 'search-folder.png')
                 2. Contact the system support immediately.<br>\
             </div>\
           </div>\
+        </div>";
+}
+
+function noSearchQuery($filesName = 'search-folder.png')
+{
+    $filesName = getAllNoDataIMG();
+    return "<div id='nodata' class='col-lg-12 mb-4 mt-2'>
+          <center>
+            <img src='" . url('public/framework/img/nodata/' . $filesName) . "' class='img-fluid mb-3' width='35%'>
+            <h6 style='letter-spacing :2px; font-family: Quicksand, sans-serif !important;margin-bottom:20px'> 
+             <strong> It's empty here </strong>
+            </h6>
+          </center>
         </div>";
 }
 
@@ -383,9 +413,10 @@ function timestamp()
     return date('Y-m-d H:i:s');
 }
 
-function isMobile(){
-    if(!empty($_SERVER['HTTP_USER_AGENT'])){
-      return preg_match("/(android|webos|avantgo|iphone|ipad|ipod|blackberry|iemobile|bolt|boost|cricket|docomo|fone|hiptop|mini|opera mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+function isMobile()
+{
+    if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+        return preg_match("/(android|webos|avantgo|iphone|ipad|ipod|blackberry|iemobile|bolt|boost|cricket|docomo|fone|hiptop|mini|opera mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
     };
     return false;
 }

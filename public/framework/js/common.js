@@ -1,9 +1,9 @@
 // set default code
-var successStatus = [200, 201];
+var successStatus = [200, 201, 302];
 var unauthorizedStatus = [401, 403];
 var errorStatus = [500, 422];
 
-async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
+async function submitApi(url, dataObj, formID = null, reloadFunction = null, closedModal = true) {
     const submitBtnText = $('#submitBtn').html();
 
     var btnSubmitIDs = $('#' + formID + ' button[type=submit]').attr("id");
@@ -15,18 +15,21 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
     if (dataObj != null) {
         url = $('meta[name="base_url"]').attr('content') + url;
 
-        const dataArr = new URLSearchParams();
+        // const dataArr = new URLSearchParams();
 
-        $.each(dataObj, function (i, field) {
-            required = $('input[name="' + field.name + '"]').attr('required');
-            // if (isDef(required)) {
-            //     console.log('field ' + field.name + ' is ' + required);
-            // }
+        // $.each(dataObj, function (i, field) {
+        //     required = $('input[name="' + field.name + '"]').attr('required');
+        //     // if (isDef(required)) {
+        //     //     console.log('field ' + field.name + ' is ' + required);
+        //     // }
 
-            dataArr.append(field.name, field.value);
-        });
+        //     dataArr.append(field.name, field.value);
+        // });
 
         try {
+            var frm = $('#' + formID);
+            const dataArr = new FormData(frm[0]);
+
             return axios({
                     method: 'POST',
                     headers: {
@@ -45,25 +48,33 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                     }
 
                     if (formID != null) {
-                        // var modalID = $('#' + formID).attr('data-modal');
-                        var modalID = $(".modal").filter(".show").attr('id');
+                        var modalID = $('#' + formID).attr('data-modal');
 
-                        setTimeout(function () {
-                            if (modalID == '#generaloffcanvas-right') {
-                                $(modalID).offcanvas('toggle');
-                            } else {
-                                $('#' + modalID).modal('hide');
-                            }
+                        // console.log(formID);
+                        // console.log(modalID);
+                        // var modalID = $(".modal").filter(".show").attr('id');
+                        // var modalID = $('#' + formID).parents().closest('.modal').attr('id');
 
-                        }, 300);
+                        if (closedModal) {
+                            setTimeout(function () {
+                                if (modalID == '#generaloffcanvas-right') {
+                                    $(modalID).offcanvas('toggle');
+                                } else {
+                                    // $('#' + modalID).modal('hide');
+                                    $(modalID).modal('hide');
+                                }
+
+                            }, 200);
+                        }
                     }
 
                     loadingBtn(submitIdBtn, false, submitBtnText);
-                    noti(result.status);
+                    noti(result.status, 'Submit');
                     return result;
                 })
                 .catch(error => {
                     const res = error.response;
+                    console.log('ERROR 1', res);
                     if (isError(res.status)) {
                         for (var error in res.data) {
                             noti(res.status, res.data[error]);
@@ -77,6 +88,7 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                 });
         } catch (e) {
             const res = e.response;
+            console.log('ERROR 2', res);
             loadingBtn(submitIdBtn, false);
 
             if (isUnauthorized(res.status)) {
@@ -86,12 +98,12 @@ async function submitApi(url, dataObj, formID = null, reloadFunction = null) {
                     var error_count = 0;
                     for (var error in res.data.errors) {
                         if (error_count == 0) {
-                            noti(400, res.data.errors[error][0]);
+                            noti(res.status, res.data.errors[error][0]);
                         }
                         error_count++;
                     }
                 } else {
-                    noti(400);
+                    noti(res.status, 'Something went wrong');
                 }
                 return res;
             }
@@ -144,12 +156,12 @@ async function deleteApi(id, url, reloadFunction = null) {
                     var error_count = 0;
                     for (var error in res.data.errors) {
                         if (error_count == 0) {
-                            noti(400, res.data.errors[error][0]);
+                            noti(res.status, res.data.errors[error][0]);
                         }
                         error_count++;
                     }
                 } else {
-                    noti(400);
+                    noti(500, 'Something went wrong');
                 }
                 return res;
             }
@@ -196,7 +208,7 @@ async function callApi(method = 'POST', url, dataObj = null) {
             })
             .catch(error => {
                 if (isError(error.response.status)) {
-                    noti(error.response.status);
+                    noti(error.response.status, 'Something went wrong');
                 } else if (isUnauthorized(error.response.status)) {
                     noti(error.response.status, "Unauthorized: Access is denied");
                 }
@@ -211,19 +223,19 @@ async function callApi(method = 'POST', url, dataObj = null) {
                 var error_count = 0;
                 for (var error in res.data.errors) {
                     if (error_count == 0) {
-                        noti(400, res.data.errors[error][0]);
+                        noti(500, res.data.errors[error][0]);
                     }
                     error_count++;
                 }
             } else {
-                noti(400);
+                noti(500, 'Something went wrong');
             }
             return res;
         }
     }
 }
 
-function noti(code = 200, text = 'Save', typeToast = 'toast') {
+function noti(code = 200, text = 'Something went wrong', typeToast = 'toast') {
     if (typeToast == 'toast') {
         cuteToast({
             type: (isSuccess(code)) ? 'success' : 'error',
@@ -283,6 +295,10 @@ function loadingBtn(id, display = false, text = "<i class='fa fa-save'></i> Save
         $("#" + id).html(text);
         $("#" + id).attr('disabled', false);
     }
+}
+
+function disableBtn(id, display = true, text = null) {
+    $("#" + id).attr("disabled", display);
 }
 
 function isset(variable_name) {
@@ -465,4 +481,17 @@ function toObject(arr) {
         }
     }
     return res
+}
+
+function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+}
+
+function capitalize(str) {
+    return str.toLowerCase().split(' ').map(function (word) {
+        return word.replace(word[0], word[0].toUpperCase());
+    }).join(' ');
 }
