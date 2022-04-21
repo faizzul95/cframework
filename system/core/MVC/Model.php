@@ -55,13 +55,56 @@ class Model
     }
 
     // where($coloumName, $value) takes the condition and returns all data related in model
-    public static function where($coloumName = NULL, $value = NULL, $con = NULL)
+    // public static function where($coloumName = NULL, $value = NULL, $con = NULL)
+    // {
+    //     $value = escape($value);
+    //     $className = get_called_class();
+    //     $obj = new $className;
+    //     return (empty($con)) ? db()->where($coloumName, $value)->get($obj->table) : db()->where($coloumName, $value, $con)->get($obj->table);
+    // }
+
+    // where($conditions, $type) takes the condition (using AND method) and returns all/single data related in model
+    public static function where($conditions = NULL, $type = 'get')
     {
-        $value = escape($value);
         $className = get_called_class();
         $obj = new $className;
-        return (empty($con)) ? db()->where($coloumName, $value)->get($obj->table) : db()->where($coloumName, $value, $con)->get($obj->table);
+        $db = db();
+
+        foreach($conditions as $con => $value){
+            $db->where($con, $value);
+        }
+
+        if ($type == 'get') {
+           return $db->get($obj->table); 
+        }else{
+           return $db->fetchRow($obj->table); 
+        }
     }
+
+    // orWhere($conditions, $type) takes the condition (using OR method) and returns all/single data related in model
+    public static function orWhere($conditions = NULL, $type = 'get')
+    {
+        $className = get_called_class();
+        $obj = new $className;
+        $db = db();
+
+        $count = 0;
+        foreach($conditions as $con => $value){
+            if ($count == 0) {
+                $db->where($con, $value);
+            }else if ($count > 0) {
+                $db->orWhere($con, $value);
+            }
+            $count++;
+        }
+
+        if ($type == 'get') {
+           return $db->get($obj->table); 
+        }else{
+           return $db->fetchRow($obj->table); 
+        }
+    }
+
 
     // first() returns the first record found in the database. If no matching model exist, it returns null
     public static function first()

@@ -109,14 +109,15 @@ STATIC METHOD / FUNCTION AVAILABLE (USE ONLY IN CONTROLLER)
     1) all()
     2) find($value, $columnName)
     3) findOrFail($value)
-    4) where($columnName, $value)
-    5) first()
-    6) last()
-    7) save($array)
-    8) insert($array)
-    9) updateOrInsert($array)
-    10) update($array)
-    11) delete($value, $columnName)
+    4) where($arrayCondition, $type) - $type is 'get' OR 'fetchRow'
+    5) orWhere($arrayCondition, $type) - $type is 'get' OR 'fetchRow'
+    6) first()
+    7) last()
+    8) save($array)
+    9) insert($array)
+    10) updateOrInsert($array)
+    11) update($array)
+    12) delete($value, $columnName)
 
 Notes : 
  - for more global function please go to folder 
